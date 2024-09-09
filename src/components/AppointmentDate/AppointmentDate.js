@@ -1,26 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { compareDates, formatTime } from "../../base/datetime";
 
-const AppointmentDate = ({ day, hasAppointment, dayAppointments, onShowModal, onSelectDate }) => {
+const AppointmentDate = ({ day, month, year, appointments, showModal, onShowModal, onSelectDate }) => {
     const maxVisibleAppointments = 2;
     const date = day + 1;
+    const fullDate = new Date(year, month, date);
 
     const [expandedDate, setExpandedDate] = useState(false);
 
-    const handleDateClick = (selectedDate) => {
-        onSelectDate(selectedDate);
+    useEffect(() => {
+        if (showModal) {
+            setExpandedDate(false);
+        }
+    }, [showModal]);
+
+    const handleDateClick = (day) => {
+        onSelectDate(fullDate);
         onShowModal(true);
         setExpandedDate(false);
     };
 
+    const handleExpandClick = (e, shouldExpand) => {
+        e.stopPropagation();
+        setExpandedDate(shouldExpand);
+    };
+
+    const getAppointmentsForDate = () => {
+        return appointments.filter(app => compareDates(app.date, fullDate));
+    };
+
+    // Check if a date already has an appointment
+    const hasAppointment = () => {
+        return appointments.some(app => compareDates(app.date, fullDate));
+    };
+
+    let dayAppointments = getAppointmentsForDate();
+
     return (
         <div
-            className={`p-2 sm:p-4 text-center text-sm sm:text-base cursor-pointer rounded-lg relative 
-                ${hasAppointment(date) ? 'bg-red-400' : 'bg-green-300'} hover:bg-green-400 transition duration-200`}
-        >
-            {/* Date Number */}
-            <div onClick={() => handleDateClick(date)}>
-                {date}
-            </div>
+            onClick={() => handleDateClick(day)}
+            className={`p-2 sm:p-4 text-sm sm:text-base cursor-pointer rounded-lg relative border hover:bg-green-400 transition duration-200`}>
+            {date}
 
             {/* Appointments List */}
             {dayAppointments.length > 0 && (
@@ -28,11 +48,12 @@ const AppointmentDate = ({ day, hasAppointment, dayAppointments, onShowModal, on
                     {
                         dayAppointments.length <= maxVisibleAppointments ?
                             dayAppointments.map((app, index) => (
-                                <div key={index} className="bg-red-600 text-white rounded px-1 py-0.5 mb-1">
-                                    {app.time}
+                                <div key={index} className="bg-green-600 text-white rounded px-1 py-0.5 mb-1">
+                                    {formatTime(app.time)}
                                 </div>
                             )) :
-                            <div onClick={() => setExpandedDate(true)} className="bg-red-600 text-white rounded px-1 py-0.5 mb-1 z-10">
+                            <div onClick={(e) => { handleExpandClick(e, true) }}
+                                className="bg-green-600 text-white rounded px-1 py-0.5 mb-1 z-10">
                                 +{dayAppointments.length}
                             </div>
                     }
@@ -40,10 +61,10 @@ const AppointmentDate = ({ day, hasAppointment, dayAppointments, onShowModal, on
                     {/* Expanded Appointment List */}
                     {expandedDate && (
                         <div
-                            className="absolute top-1 left-1 bg-white border border-gray-300 rounded-lg p-2 shadow-lg z-20">
+                            className="absolute top-1 left-1 bg-white rounded-lg p-2 shadow-lg z-20">
                             {dayAppointments.map((app, index) => (
-                                <div key={index} onClick={() => setExpandedDate(false)} className="text-red-800">
-                                    {app.time}
+                                <div key={index} onClick={(e) => { handleExpandClick(e, false) }} className="text-green-800 whitespace-nowrap">
+                                    {formatTime(app.time)}
                                 </div>
                             ))}
                         </div>

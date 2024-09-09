@@ -5,6 +5,8 @@ import AppointmentModal from './components/AppointmentModal/AppointmentModal';
 import AppointmentNotification from './components/AppointmentNotification/AppointmentNotification';
 import AppointmentDate from './components/AppointmentDate/AppointmentDate';
 
+import { getDaysInMonth, getFirstDayOfMonth, daysOfWeek, getMonthName } from './base/datetime'
+
 const App = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
@@ -17,19 +19,6 @@ const App = () => {
   // State for month and year
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-
-  // Days and months for rendering calendar
-  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const availableHours = [
-    '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM',
-    '3:00 PM', '4:00 PM', '5:00 PM'
-  ];
-
-  // Function to get the number of days in a month
-  const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
-
-  // Function to get the first day of the month
-  const getFirstDayOfMonth = (month, year) => new Date(year, month, 1).getDay();
 
   // Function to navigate to the previous month
   const prevMonth = () => {
@@ -51,20 +40,14 @@ const App = () => {
     }
   };
 
-  // Handle date click to show modal
-
-  // Check if a date already has an appointment
-  const hasAppointment = (day) => {
-    return appointments.some(app => app.date === day);
-  };
-
-  // Get appointments for a specific date
-  const getAppointmentsForDate = (day) => {
-    return appointments.filter(app => app.date === day);
-  };
-
   const daysInMonth = getDaysInMonth(currentMonth, currentYear);
-  const firstDayOfMonth = getFirstDayOfMonth(currentMonth, currentYear);
+
+  const handleDateCount = () => {
+    let firstDay = getFirstDayOfMonth(currentMonth, currentYear);
+    return firstDay === 0 ? 6 : firstDay - 1;
+  };
+
+  const monthName = getMonthName(currentMonth, currentYear);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
@@ -73,16 +56,18 @@ const App = () => {
       {/* Calendar Header */}
       <div className="flex items-center mb-4">
         <button
-          className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition duration-200"
+          className="px-4 py-2rounded-lg hover:border transition duration-200"
           onClick={prevMonth}
         >
           &lt;
         </button>
         <div className="mx-4 text-xl font-semibold">
-          {`${new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long' })} ${currentYear}`}
+          <div>
+            {monthName} {currentYear}
+          </div>
         </div>
         <button
-          className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition duration-200"
+          className="px-4 py-2 rounded-lg hover:border transition duration-200"
           onClick={nextMonth}
         >
           &gt;
@@ -94,24 +79,24 @@ const App = () => {
         {daysOfWeek.map((day, index) => (
           <div key={index} className="text-center font-semibold text-sm sm:text-base">{day}</div>
         ))}
-        {[...Array(firstDayOfMonth)].map((_, index) => (
+        {[...Array(handleDateCount())].map((_, index) => (
           <div key={index} className="text-center text-sm sm:text-base"></div>
         ))}
         {[...Array(daysInMonth)].map((_, day) => {
-          const dayAppointments = getAppointmentsForDate(day + 1);
-
-          return <AppointmentDate 
+          return <AppointmentDate
             day={day}
-            dayAppointments={dayAppointments}
-            hasAppointment={hasAppointment}
+            month={currentMonth}
+            year={currentYear}
+            showModal={showModal}
+            appointments={appointments}
             onSelectDate={setSelectedDate}
             onShowModal={setShowModal}
-            />
+          />
         })}
       </div>
 
       <AppointmentNotification
-        message={`Appointment confirmed on ${selectedDate} at ${selectedTimeSlot}`}
+        message={`Appointment confirmed on ${selectedDate}`}
         show={showNotification}
         onClose={() => {
           setShowNotification(false);
@@ -123,7 +108,6 @@ const App = () => {
           selectedDate={selectedDate}
           selectedTimeSlot={selectedTimeSlot}
           appointments={appointments}
-          availableHours={availableHours}
           setSelectedTimeSlot={setSelectedTimeSlot}
           onShowNotification={setShowNotification}
           onSetAppointments={setAppointments}
