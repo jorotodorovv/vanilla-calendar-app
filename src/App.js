@@ -52,10 +52,6 @@ const App = () => {
   };
 
   // Handle date click to show modal
-  const handleDateClick = (day) => {
-    setSelectedDate(day);
-    setShowModal(true);
-  };
 
   // Check if a date already has an appointment
   const hasAppointment = (day) => {
@@ -108,7 +104,8 @@ const App = () => {
             day={day}
             dayAppointments={dayAppointments}
             hasAppointment={hasAppointment}
-            onDateClick={handleDateClick}
+            onSelectDate={setSelectedDate}
+            onShowModal={setShowModal}
             />
         })}
       </div>
