@@ -1,12 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { compareDates, formatTime } from "../../base/datetime";
 
 const AppointmentDate = ({ day, month, year, appointments, showModal, onShowModal, onSelectDate }) => {
-    const maxVisibleAppointments = 2;
+    const MAX_APPOINTMENTS = 2;
+
     const date = day + 1;
     const fullDate = new Date(year, month, date);
+    const dateKey = fullDate.toLocaleString('default');
 
     const [expandedDate, setExpandedDate] = useState(false);
+
+    useEffect(() => {
+        setExpandedDate(false);
+    }, [month]);
 
     useEffect(() => {
         if (showModal) {
@@ -25,8 +31,12 @@ const AppointmentDate = ({ day, month, year, appointments, showModal, onShowModa
         setExpandedDate(shouldExpand);
     };
 
-    const getAppointmentsForDate = () => {
-        return appointments.filter(app => compareDates(app.date, fullDate));
+    const getAppointmentsForDate = (appointments, fullDate) => {
+        return appointments
+            .filter(app => compareDates(app.date, fullDate))
+            .sort((app1, app2) => {
+                return app1.time - app2.time;
+            });
     };
 
     // Check if a date already has an appointment
@@ -34,10 +44,11 @@ const AppointmentDate = ({ day, month, year, appointments, showModal, onShowModa
         return appointments.some(app => compareDates(app.date, fullDate));
     };
 
-    let dayAppointments = getAppointmentsForDate();
+    let dayAppointments = useMemo(() => getAppointmentsForDate(appointments, fullDate), [appointments, fullDate]);
 
     return (
         <div
+            key={dateKey}
             onClick={() => handleDateClick(day)}
             className={`p-2 sm:p-4 text-sm sm:text-base cursor-pointer rounded-lg relative border hover:bg-green-400 transition duration-200`}>
             {date}
@@ -46,7 +57,7 @@ const AppointmentDate = ({ day, month, year, appointments, showModal, onShowModa
             {dayAppointments.length > 0 && (
                 <div className="absolute bottom-1 right-1 text-xs text-red-800">
                     {
-                        dayAppointments.length <= maxVisibleAppointments ?
+                        dayAppointments.length <= MAX_APPOINTMENTS ?
                             dayAppointments.map((app, index) => (
                                 <div key={index} className="bg-green-600 text-white rounded px-1 py-0.5 mb-1">
                                     {formatTime(app.time)}

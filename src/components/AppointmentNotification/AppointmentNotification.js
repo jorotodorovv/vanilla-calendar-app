@@ -1,13 +1,16 @@
 import Notification from "../base/Notification/Notification";
+import { formatText } from "../../base/string";
 
 const AppointmentNotification = (props) => {
-    return <div className="relative h-screen w-screen">
-        {props.show && <Notification
-            message={props.message}
+    let message = formatText(props.message, props.placeholders);
+
+    return <div className="relative">
+        <Notification
+            message={message}
             onClose={props.onClose}
             showTimeout={3000}
             hideTimeout={300}
-        />}
+        />
     </div>
 }
 

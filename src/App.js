@@ -49,70 +49,74 @@ const App = () => {
 
   const monthName = getMonthName(currentMonth, currentYear);
 
+  const handleNotificationClose = () => {
+    setShowNotification(false);
+    setSelectedTimeSlot(null);
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-center">My Calendar</h1>
+    <>
+      {showNotification && <AppointmentNotification
+        message={`Appointment confirmed on {0}`}
+        placeholders={[selectedDate]}
+        onClose={handleNotificationClose} />}
+        
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-center">My Calendar</h1>
 
-      {/* Calendar Header */}
-      <div className="flex items-center mb-4">
-        <button
-          className="px-4 py-2rounded-lg hover:border transition duration-200"
-          onClick={prevMonth}
-        >
-          &lt;
-        </button>
-        <div className="mx-4 text-xl font-semibold">
-          <div>
-            {monthName} {currentYear}
+        {/* Calendar Header */}
+        <div className="flex items-center mb-4">
+          <button
+            className="px-4 py-2rounded-lg hover:border transition duration-200"
+            onClick={prevMonth}
+          >
+            &lt;
+          </button>
+          <div className="mx-4 text-xl font-semibold">
+            <div>
+              {monthName} {currentYear}
+            </div>
           </div>
+          <button
+            className="px-4 py-2 rounded-lg hover:border transition duration-200"
+            onClick={nextMonth}
+          >
+            &gt;
+          </button>
         </div>
-        <button
-          className="px-4 py-2 rounded-lg hover:border transition duration-200"
-          onClick={nextMonth}
-        >
-          &gt;
-        </button>
-      </div>
 
-      {/* Calendar Grid */}
-      <div className="grid grid-cols-7 sm:grid-cols-7 gap-4 bg-white p-6 rounded-lg shadow-lg w-full sm:max-w-md lg:max-w-4xl">
-        {daysOfWeek.map((day, index) => (
-          <div key={index} className="text-center font-semibold text-sm sm:text-base">{day}</div>
-        ))}
-        {[...Array(handleDateCount())].map((_, index) => (
-          <div key={index} className="text-center text-sm sm:text-base"></div>
-        ))}
-        {[...Array(daysInMonth)].map((_, day) => {
-          return <AppointmentDate
-            day={day}
-            month={currentMonth}
-            year={currentYear}
-            showModal={showModal}
+        {/* Calendar Grid */}
+        <div className="grid grid-cols-7 sm:grid-cols-7 gap-4 bg-white p-6 rounded-lg shadow-lg w-full sm:max-w-md lg:max-w-4xl">
+          {daysOfWeek.map((day, index) => (
+            <div key={index} className="text-center font-semibold text-sm sm:text-base">{day}</div>
+          ))}
+          {[...Array(handleDateCount())].map((_, index) => (
+            <div key={index} className="text-center text-sm sm:text-base"></div>
+          ))}
+          {[...Array(daysInMonth)].map((_, day) => {
+            return <AppointmentDate
+              day={day}
+              month={currentMonth}
+              year={currentYear}
+              showModal={showModal}
+              appointments={appointments}
+              onSelectDate={setSelectedDate}
+              onShowModal={setShowModal}
+            />
+          })}
+        </div>
+
+        {showModal &&
+          <AppointmentModal
+            selectedDate={selectedDate}
+            selectedTimeSlot={selectedTimeSlot}
             appointments={appointments}
-            onSelectDate={setSelectedDate}
-            onShowModal={setShowModal}
-          />
-        })}
+            setSelectedTimeSlot={setSelectedTimeSlot}
+            onShowNotification={setShowNotification}
+            onSetAppointments={setAppointments}
+            onSetShowModal={setShowModal} />}
       </div>
-
-      <AppointmentNotification
-        message={`Appointment confirmed on ${selectedDate}`}
-        show={showNotification}
-        onClose={() => {
-          setShowNotification(false);
-          setSelectedTimeSlot(null);
-        }} />
-
-      {showModal &&
-        <AppointmentModal
-          selectedDate={selectedDate}
-          selectedTimeSlot={selectedTimeSlot}
-          appointments={appointments}
-          setSelectedTimeSlot={setSelectedTimeSlot}
-          onShowNotification={setShowNotification}
-          onSetAppointments={setAppointments}
-          onSetShowModal={setShowModal} />}
-    </div>
+    </>
   );
 };
 
