@@ -6,8 +6,12 @@ import AppointmentNotification from './components/AppointmentNotification/Appoin
 import AppointmentDate from './components/AppointmentDate/AppointmentDate';
 
 import { getDaysInMonth, getFirstDayOfMonth, daysOfWeek, getMonthName } from './base/datetime'
+import AppointmentSelector from './components/AppointmentSelector/AppointmentSelector';
+import AppointmentSelectorContainer from './components/AppointmentSelectorContainer/AppointmentSelectorContainer';
 
 const App = () => {
+  const currentFullYear = new Date().getFullYear();
+
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
 
@@ -18,7 +22,7 @@ const App = () => {
 
   // State for month and year
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [currentYear, setCurrentYear] = useState(currentFullYear);
 
   // Function to navigate to the previous month
   const prevMonth = () => {
@@ -47,8 +51,6 @@ const App = () => {
     return firstDay === 0 ? 6 : firstDay - 1;
   };
 
-  const monthName = getMonthName(currentMonth, currentYear);
-
   const handleNotificationClose = () => {
     setShowNotification(false);
     setSelectedTimeSlot(null);
@@ -60,7 +62,7 @@ const App = () => {
         message={`Appointment confirmed on {0}`}
         placeholders={[selectedDate]}
         onClose={handleNotificationClose} />}
-        
+
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
         <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-center">My Calendar</h1>
 
@@ -73,8 +75,14 @@ const App = () => {
             &lt;
           </button>
           <div className="mx-4 text-xl font-semibold">
-            <div>
-              {monthName} {currentYear}
+            <div className="flex items-center justify-center space-x-4">
+              <AppointmentSelectorContainer
+                selectedMonth={currentMonth}
+                selectedYear={currentYear}
+                currentYear={currentFullYear}
+                onSelectMonth={setCurrentMonth}
+                onSelectYear={setCurrentYear}
+              />
             </div>
           </div>
           <button

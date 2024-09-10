@@ -24,7 +24,7 @@ const AppointmentModal = (props) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 z-30">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
         <h2 className="text-lg sm:text-xl font-bold mb-4 text-center">Select a time for {props.selectedDate.getDay()}</h2>
         <ul className="grid grid-cols-2 gap-4">
