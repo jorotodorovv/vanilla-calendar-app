@@ -1,9 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const AppointmentSelector = ({ type, options, defaultIndex, mapTo, expandType, onSelect, onExpand }) => {
     const MAX_SCROLLLESS_OPTION_COUNT = 5;
 
     let [isExpanded, setExpanded] = useState(false);
+    let currentRef = useRef(null);
+
+    useEffect(() => {
+        if (isExpanded && currentRef.current) {
+            currentRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    }, [isExpanded, currentRef]);
 
     useEffect(() => {
         if (type !== expandType) {
@@ -31,6 +38,7 @@ const AppointmentSelector = ({ type, options, defaultIndex, mapTo, expandType, o
             <div className={`absolute top-full left-0 bg-white shadow-md rounded-lg ${scrollStyle} max-h-60 w-40`}>
                 {mappedOptions.map((option, index) => (
                     <div
+                        ref={index === defaultIndex ? currentRef : null}
                         key={option + index}
                         className={`p-2 text-center cursor-pointer ${index === defaultIndex ? 'bg-green-300' : ''}`}
                         onClick={() => handleClick(option, index)}>

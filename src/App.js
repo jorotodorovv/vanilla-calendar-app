@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
 import AppointmentModal from './components/AppointmentModal/AppointmentModal';
 import AppointmentNotification from './components/AppointmentNotification/AppointmentNotification';
 import AppointmentDate from './components/AppointmentDate/AppointmentDate';
-
-import { getDaysInMonth, getFirstDayOfMonth, daysOfWeek, getMonthName } from './base/datetime'
-import AppointmentSelector from './components/AppointmentSelector/AppointmentSelector';
 import AppointmentSelectorContainer from './components/AppointmentSelectorContainer/AppointmentSelectorContainer';
+import AppointmentCalendar from './components/AppointmentCalendar/AppointmentCalendar';
 
 const App = () => {
   const currentFullYear = new Date().getFullYear();
@@ -24,6 +22,12 @@ const App = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(currentFullYear);
 
+  const [slideDirection, setSlideDirection] = useState(null);
+
+  useEffect(() => {
+    setSlideDirection(null);
+  }, []);
+
   // Function to navigate to the previous month
   const prevMonth = () => {
     if (currentMonth === 0) {
@@ -32,6 +36,8 @@ const App = () => {
     } else {
       setCurrentMonth(currentMonth - 1);
     }
+
+    setSlideDirection('slide-left');
   };
 
   // Function to navigate to the next month
@@ -42,13 +48,8 @@ const App = () => {
     } else {
       setCurrentMonth(currentMonth + 1);
     }
-  };
 
-  const daysInMonth = getDaysInMonth(currentMonth, currentYear);
-
-  const handleDateCount = () => {
-    let firstDay = getFirstDayOfMonth(currentMonth, currentYear);
-    return firstDay === 0 ? 6 : firstDay - 1;
+    setSlideDirection('slide-right');
   };
 
   const handleNotificationClose = () => {
@@ -94,25 +95,18 @@ const App = () => {
         </div>
 
         {/* Calendar Grid */}
-        <div className="grid grid-cols-7 sm:grid-cols-7 gap-4 bg-white p-6 rounded-lg shadow-lg w-full sm:max-w-md lg:max-w-4xl">
-          {daysOfWeek.map((day, index) => (
-            <div key={index} className="text-center font-semibold text-sm sm:text-base">{day}</div>
-          ))}
-          {[...Array(handleDateCount())].map((_, index) => (
-            <div key={index} className="text-center text-sm sm:text-base"></div>
-          ))}
-          {[...Array(daysInMonth)].map((_, day) => {
-            return <AppointmentDate
-              day={day}
-              month={currentMonth}
-              year={currentYear}
-              showModal={showModal}
-              appointments={appointments}
-              onSelectDate={setSelectedDate}
-              onShowModal={setShowModal}
-            />
-          })}
-        </div>
+        <AppointmentCalendar
+          currentMonth={currentMonth}
+          currentYear={currentYear}
+          slideDirection={slideDirection}>
+          <AppointmentDate
+            appointments={appointments}
+            showModal={showModal}
+            selectedDate={selectedDate}
+            onSelectDate={setSelectedDate}
+            onShowModal={setShowModal}
+          />
+        </AppointmentCalendar>
 
         {showModal &&
           <AppointmentModal
