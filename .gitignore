@@ -10,7 +10,13 @@
 /coverage
 
 # production
-/build
+**/build
+**/dist
+*.db
+*.db-journal
+*.toml
+.vscode
+*.sql
 
 # misc
 .DS_Store
