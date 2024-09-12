@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
+import '../styles/globals.css'
 
-import AppointmentModal from './components/AppointmentModal/AppointmentModal';
-import AppointmentNotification from './components/AppointmentNotification/AppointmentNotification';
-import AppointmentDate from './components/AppointmentDate/AppointmentDate';
-import AppointmentSelectorContainer from './components/AppointmentSelectorContainer/AppointmentSelectorContainer';
-import AppointmentCalendar from './components/AppointmentCalendar/AppointmentCalendar';
+import AppointmentModal from '../components/AppointmentModal/AppointmentModal';
+import AppointmentNotification from '../components/AppointmentNotification/AppointmentNotification';
+import AppointmentDate from '../components/AppointmentDate/AppointmentDate';
+import AppointmentSelectorContainer from '../components/AppointmentSelectorContainer/AppointmentSelectorContainer';
+import AppointmentCalendar from '../components/AppointmentCalendar/AppointmentCalendar';
 
-const App = () => {
+const Home = () => {
   const currentFullYear = new Date().getFullYear();
 
   const [selectedDate, setSelectedDate] = useState(null);
@@ -121,5 +121,5 @@ const App = () => {
   );
 };
 
-export default App;
+export default Home;
 
