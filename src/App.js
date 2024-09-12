@@ -22,7 +22,7 @@ const App = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(currentFullYear);
 
-  const [slideDirection, setSlideDirection] = useState(null);
+  const [slideDirection, setSlideDirection] = useState('transition-transform');
 
   useEffect(() => {
     setSlideDirection(null);
@@ -71,8 +71,7 @@ const App = () => {
         <div className="flex items-center mb-4">
           <button
             className="px-4 py-2rounded-lg hover:border transition duration-200"
-            onClick={prevMonth}
-          >
+            onClick={prevMonth}>
             &lt;
           </button>
           <div className="mx-4 text-xl font-semibold">
@@ -88,17 +87,17 @@ const App = () => {
           </div>
           <button
             className="px-4 py-2 rounded-lg hover:border transition duration-200"
-            onClick={nextMonth}
-          >
+            onClick={nextMonth}>
             &gt;
           </button>
         </div>
 
-        {/* Calendar Grid */}
         <AppointmentCalendar
+          duration={200}
           currentMonth={currentMonth}
           currentYear={currentYear}
-          slideDirection={slideDirection}>
+          slideDirection={slideDirection}
+          setSlideDirection={setSlideDirection}>
           <AppointmentDate
             appointments={appointments}
             showModal={showModal}

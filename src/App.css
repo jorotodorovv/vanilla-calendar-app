@@ -1,7 +1,11 @@
 .slide-left {
-  @apply transform translate-x-full;
+  @apply transform -translate-x-full;
 }
 
 .slide-right {
-  @apply transform -translate-x-full;
+  @apply transform translate-x-full;
+}
+
+.transition-transform {
+  @apply transform translate-x-0;
 }

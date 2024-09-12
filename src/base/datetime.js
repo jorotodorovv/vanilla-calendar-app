@@ -8,7 +8,6 @@ function formatTime(hour) {
 }
 
 const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
-const getFirstDayOfMonth = (month, year) => new Date(year, month, 1).getDay();
 const getMonthName = (month, year) => new Date(year, month).toLocaleString('default', { month: 'long' });
 
 const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -27,5 +26,10 @@ function compareDates(d1, d2) {
 
     return date1.getTime() === date2.getTime();
 }
+
+const getFirstDayOfMonth = (month, year) => {
+    let firstDay = new Date(year, month, 1).getDay();
+    return firstDay === 0 ? 6 : firstDay - 1;
+};
 
 export { formatTime, getDaysInMonth, getFirstDayOfMonth, getMonthName, daysOfWeek, addHours, compareDates }

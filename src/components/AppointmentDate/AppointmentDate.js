@@ -44,7 +44,9 @@ const AppointmentDate = ({ day, month, year, appointments, showModal, onShowModa
         return appointments.some(app => compareDates(app.date, fullDate));
     };
 
-    let dayAppointments = useMemo(() => getAppointmentsForDate(appointments, fullDate), [appointments, fullDate]);
+    let dayAppointments = useMemo(
+        () => getAppointmentsForDate(appointments, fullDate),
+        [appointments, fullDate]);
 
     return (
         <div

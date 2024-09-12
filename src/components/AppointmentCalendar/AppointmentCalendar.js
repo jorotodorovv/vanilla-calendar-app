@@ -2,21 +2,26 @@ import React, { useEffect, useState } from 'react';
 
 import { getFirstDayOfMonth, getDaysInMonth, daysOfWeek } from '../../base/datetime';
 
-const AppointmentCalendar = ({ children, currentMonth, currentYear, slideDirection }) => {
+const AppointmentCalendar = ({ children, currentMonth, currentYear, slideDirection, setSlideDirection, duration }) => {
     const daysInMonth = getDaysInMonth(currentMonth, currentYear);
 
-    // TODO: move to datetime.js
-    const handleDateCount = (month, year) => {
-        let firstDay = getFirstDayOfMonth(month, year);
-        return firstDay === 0 ? 6 : firstDay - 1;
-    };
+    let emptyDates = getFirstDayOfMonth(currentMonth, currentYear);
 
-    let emptyDates = handleDateCount(currentMonth, currentYear);
+    useEffect(() => {
+        if (slideDirection) {
+            const timer = setTimeout(() => {
+                setSlideDirection('transition-transform');
+            }, duration);
 
-    return <div className={
-        `grid grid-cols-7 sm:grid-cols-7 gap-4 bg-white p-6 
+            return () => clearTimeout(timer);
+        }
+    }, [slideDirection]);
+
+    return <div key={currentMonth + currentYear}
+        className={
+            `grid grid-cols-7 sm:grid-cols-7 gap-4 bg-white p-6 
         rounded-lg shadow-lg w-full sm:max-w-md lg:max-w-4xl 
-        transform duration-500 ${slideDirection}`}>
+        transform ${slideDirection} duration-${duration}`}>
         {daysOfWeek.map((day, index) => (
             <div key={index} className="text-center font-semibold text-sm sm:text-base">{day}</div>
         ))}
