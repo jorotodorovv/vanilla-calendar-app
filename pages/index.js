@@ -9,6 +9,8 @@ import AppointmentCalendar from '../components/AppointmentCalendar/AppointmentCa
 const Home = ({ appointmentsData }) => {
   const currentFullYear = new Date().getFullYear();
 
+  const [error, setError] = useState(null);
+
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
 
@@ -55,12 +57,13 @@ const Home = ({ appointmentsData }) => {
   const handleNotificationClose = () => {
     setShowNotification(false);
     setSelectedTimeSlot(null);
+    setError(null);
   };
 
   return (
     <>
       {showNotification && <AppointmentNotification
-        message={`Appointment confirmed on {0}`}
+        message={error ? error : `Appointment confirmed on {0}`}
         placeholders={[selectedDate]}
         onClose={handleNotificationClose} />}
 
@@ -111,6 +114,7 @@ const Home = ({ appointmentsData }) => {
             appointments={appointments}
             setSelectedTimeSlot={setSelectedTimeSlot}
             onShowNotification={setShowNotification}
+            onSetError={setError}
             onSetAppointments={setAppointments}
             onSetShowModal={setShowModal} />}
       </div>
@@ -123,6 +127,7 @@ export const getServerSideProps = async () => {
     const appointments = await prisma.appointment.findMany();
 
     const mappedAppointments = appointments.map(app => ({
+      id: app.id,
       date: app.date.toString(),
       time: app.date.getHours() + (app.date.getMinutes() === 30 ? 0.5 : 0),
     }));

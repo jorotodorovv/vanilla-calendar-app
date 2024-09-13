@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+
 import { addHours, formatTime } from "../../base/datetime";
 import AppointmentTimeslot from "../AppointmentTimeslot/AppointmentTimeslot";
 
@@ -14,20 +15,29 @@ const AppointmentModal = (props) => {
   }, []);
 
   const confirmAppointment = async () => {
-    let date = addHours(props.selectedDate, props.selectedTimeSlot);
+    try {
+      let date = addHours(props.selectedDate, props.selectedTimeSlot);
 
-    const res = await fetch('/api/appointments', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ date }),
-    });
+      const res = await fetch('/api/appointments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date }),
+      });
 
-    if (res.ok) {
-      props.onSetAppointments([...props.appointments, { date, time: props.selectedTimeSlot }]);
-      props.onSetShowModal(false);
+      if (res.ok) {
+        props.onSetAppointments([...props.appointments, { date, time: props.selectedTimeSlot }]);
+        props.onSetShowModal(false);
+        props.onShowNotification(true);
+      }
+      else {
+        let result = await res.json();
+
+        throw new Error(result.error);
+      }
+    }
+    catch (ex) {
+      props.onSetError(ex.message);
       props.onShowNotification(true);
-    } else {
-      throw new Error('Failed to save appointment')
     }
   };
 
@@ -38,6 +48,7 @@ const AppointmentModal = (props) => {
         <ul className="grid grid-cols-2 gap-4">
           {availableHours.map((time, index) => (
             <AppointmentTimeslot
+              key={props.selectedDate + time}
               time={time}
               index={index}
               selectedDate={props.selectedDate}
