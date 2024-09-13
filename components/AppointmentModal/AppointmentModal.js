@@ -7,20 +7,28 @@ const AppointmentModal = (props) => {
 
   useEffect(() => {
     props.onShowNotification(false);
-    
+
     return () => {
       props.setSelectedTimeSlot(null);
     };
   }, []);
 
-  // Handle confirmation of the appointment
-  const confirmAppointment = () => {
+  const confirmAppointment = async () => {
     let date = addHours(props.selectedDate, props.selectedTimeSlot);
 
-    props.onSetAppointments([...props.appointments, { date, time: props.selectedTimeSlot }]);
+    const res = await fetch('/api/appointments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date }),
+    });
 
-    props.onSetShowModal(false);
-    props.onShowNotification(true);
+    if (res.ok) {
+      props.onSetAppointments([...props.appointments, { date, time: props.selectedTimeSlot }]);
+      props.onSetShowModal(false);
+      props.onShowNotification(true);
+    } else {
+      throw new Error('Failed to save appointment')
+    }
   };
 
   return (

@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
 import { getFirstDayOfMonth, getDaysInMonth, daysOfWeek } from '../../base/datetime';
+import AppointmentDate from '../AppointmentDate/AppointmentDate';
 
-const AppointmentCalendar = ({ children, currentMonth, currentYear, slideDirection, setSlideDirection, duration }) => {
+const AppointmentCalendar = ({
+    appointments, currentMonth, currentYear,
+    slideDirection, setSlideDirection,
+    showModal, onShowModal,
+    selectedDate, onSelectDate,
+    duration }) => {
     const daysInMonth = getDaysInMonth(currentMonth, currentYear);
 
     let emptyDates = getFirstDayOfMonth(currentMonth, currentYear);
@@ -17,6 +23,20 @@ const AppointmentCalendar = ({ children, currentMonth, currentYear, slideDirecti
         }
     }, [slideDirection]);
 
+    let dates = [...Array(daysInMonth)].map((_, day) => {
+        return <AppointmentDate
+            key={day}
+            day={day}
+            month={currentMonth}
+            year={currentYear}
+            appointments={appointments}
+            showModal={showModal}
+            onShowModal={onShowModal}
+            selectedDate={selectedDate}
+            onSelectDate={onSelectDate}
+        />
+    });
+
     return <div key={currentMonth + currentYear}
         className={
             `grid grid-cols-7 sm:grid-cols-7 gap-4 bg-white p-6 
@@ -28,13 +48,7 @@ const AppointmentCalendar = ({ children, currentMonth, currentYear, slideDirecti
         {[...Array(emptyDates)].map((_, index) => (
             <div key={index} className="text-center text-sm sm:text-base"></div>
         ))}
-        {[...Array(daysInMonth)].map((_, day) => {
-            return React.cloneElement(children, {
-                day,
-                month: currentMonth,
-                year: currentYear,
-            });
-        })}
+        {dates}
     </div>;
 };
 

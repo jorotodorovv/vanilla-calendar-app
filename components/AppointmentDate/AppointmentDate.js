@@ -6,7 +6,6 @@ const AppointmentDate = ({ day, month, year, appointments, showModal, onShowModa
 
     const date = day + 1;
     const fullDate = new Date(year, month, date);
-    const dateKey = fullDate.toLocaleString('default');
 
     const [expandedDate, setExpandedDate] = useState(false);
 
@@ -31,26 +30,20 @@ const AppointmentDate = ({ day, month, year, appointments, showModal, onShowModa
         setExpandedDate(shouldExpand);
     };
 
-    const getAppointmentsForDate = (appointments, fullDate) => {
-        return appointments
-            .filter(app => compareDates(app.date, fullDate))
-            .sort((app1, app2) => {
-                return app1.time - app2.time;
-            });
-    };
-
     // Check if a date already has an appointment
     const hasAppointment = () => {
         return appointments.some(app => compareDates(app.date, fullDate));
     };
 
-    let dayAppointments = useMemo(
-        () => getAppointmentsForDate(appointments, fullDate),
-        [appointments, fullDate]);
+    const dayAppointments = appointments ? appointments
+        .filter(app => compareDates(app.date, fullDate))
+        .sort((app1, app2) => {
+            return app1.time - app2.time;
+        }) : [];
 
     return (
         <div
-            key={dateKey}
+            key={year + month + date}
             onClick={() => handleDateClick(day)}
             className={`p-2 sm:p-4 text-sm sm:text-base cursor-pointer rounded-lg relative border hover:bg-green-400 transition duration-200`}>
             {date}
