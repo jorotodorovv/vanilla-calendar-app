@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
-import { compareDates, formatTime } from "../../base/datetime";
+import { useEffect, useState } from "react";
+import { compareDates } from "../../base/datetime";
+
+import AppointmentPopup from "../AppointmentPopup/AppointmentPopup";
 
 const AppointmentDate = ({ day, month, year, appointments, showModal, onShowModal, onSelectDate }) => {
-    const MAX_APPOINTMENTS = 2;
-
     const date = day + 1;
     const fullDate = new Date(year, month, date);
 
@@ -25,11 +25,6 @@ const AppointmentDate = ({ day, month, year, appointments, showModal, onShowModa
         setExpandedDate(false);
     };
 
-    const handleExpandClick = (e, shouldExpand) => {
-        e.stopPropagation();
-        setExpandedDate(shouldExpand);
-    };
-
     // Check if a date already has an appointment
     const hasAppointment = () => {
         return appointments.some(app => compareDates(app.date, fullDate));
@@ -41,41 +36,25 @@ const AppointmentDate = ({ day, month, year, appointments, showModal, onShowModa
             return app1.time - app2.time;
         }) : [];
 
+    const dateNow = new Date();
+    dateNow.setHours(0, 0, 0, 0);
+
+    let className = dateNow.getTime() <= fullDate.getTime() ? 'border cursor-pointer hover:bg-green-400 transition duration-200' : ' bg-gray-100';
+    let onClick = dateNow.getTime() <= fullDate.getTime() ? () => handleDateClick(day) : null;
+
     return (
         <div
             key={year + month + date}
-            onClick={() => handleDateClick(day)}
-            className={`p-2 sm:p-4 text-sm sm:text-base cursor-pointer rounded-lg relative border hover:bg-green-400 transition duration-200`}>
+            onClick={onClick}
+            className={`p-2 sm:p-4 text-sm sm:text-base rounded-lg relative ${className}`}>
             {date}
 
-            {/* Appointments List */}
             {dayAppointments.length > 0 && (
-                <div className="absolute bottom-1 right-1 text-xs text-red-800">
-                    {
-                        dayAppointments.length <= MAX_APPOINTMENTS ?
-                            dayAppointments.map((app, index) => (
-                                <div key={index} className="bg-green-600 text-white rounded px-1 py-0.5 mb-1">
-                                    {formatTime(app.time)}
-                                </div>
-                            )) :
-                            <div onClick={(e) => { handleExpandClick(e, true) }}
-                                className="bg-green-600 text-white rounded px-1 py-0.5 mb-1 z-10">
-                                +{dayAppointments.length}
-                            </div>
-                    }
-
-                    {/* Expanded Appointment List */}
-                    {expandedDate && (
-                        <div
-                            className="absolute top-1 left-1 bg-white rounded-lg p-2 shadow-lg z-20">
-                            {dayAppointments.map((app, index) => (
-                                <div key={index} onClick={(e) => { handleExpandClick(e, false) }} className="text-green-800 whitespace-nowrap">
-                                    {formatTime(app.time)}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                <AppointmentPopup
+                    dayAppointments={dayAppointments}
+                    expandedDate={expandedDate}
+                    onSetExpandedDate={setExpandedDate}
+                />
             )}
         </div>
     );

@@ -19,13 +19,14 @@ export default async function handler(req, res) {
     }
     else if (req.method === 'POST') {
         try {
+            const { date } = req.body;
             if (!date) {
                 return res.status(400).json({ error: 'Missing date fields' });
             }
-            // if (!availableHours.some(a => a === props.selectedTimeSlot)) {
-            //     throw new Error('Current time slot is not available for appointment.');
-            //   }
-            const { date } = req.body;
+
+            if (new Date(date).getTime() < Date.now) {
+                return res.status(400).json({ error: 'Cannot schedule appointments in the past' });
+            }
 
             const existingAppointment = await prisma.appointment.findFirst({
                 where: {
