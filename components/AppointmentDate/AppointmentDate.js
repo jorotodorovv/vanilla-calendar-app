@@ -1,63 +1,51 @@
 import { useEffect, useState } from "react";
 import { compareDates } from "../../base/datetime";
-
 import AppointmentPopup from "../AppointmentPopup/AppointmentPopup";
+import { cn } from "@/lib/utils"
 
-const AppointmentDate = ({ day, month, year, appointments, showModal, onShowModal, onSelectDate }) => {
-    const date = day + 1;
-    const fullDate = new Date(year, month, date);
+export default function AppointmentDate({ day, month, year, appointments, showModal, onShowModal, onSelectDate, selectedDate }) {
+  const date = day + 1;
+  const fullDate = new Date(year, month, date);
+  const [expandedDate, setExpandedDate] = useState(false);
 
-    const [expandedDate, setExpandedDate] = useState(false);
+  useEffect(() => {
+    setExpandedDate(false);
+  }, [month, showModal]);
 
-    useEffect(() => {
-        setExpandedDate(false);
-    }, [month]);
+  const handleDateClick = () => {
+    onSelectDate(fullDate);
+    onShowModal(true);
+    setExpandedDate(false);
+  };
 
-    useEffect(() => {
-        if (showModal) {
-            setExpandedDate(false);
-        }
-    }, [showModal]);
+  const hasAppointment = appointments.some(app => compareDates(app.date, fullDate));
 
-    const handleDateClick = (day) => {
-        onSelectDate(fullDate);
-        onShowModal(true);
-        setExpandedDate(false);
-    };
+  const dayAppointments = appointments
+    .filter(app => compareDates(app.date, fullDate))
+    .sort((app1, app2) => app1.time - app2.time);
 
-    // Check if a date already has an appointment
-    const hasAppointment = () => {
-        return appointments.some(app => compareDates(app.date, fullDate));
-    };
+  const dateNow = new Date();
+  dateNow.setHours(0, 0, 0, 0);
 
-    const dayAppointments = appointments ? appointments
-        .filter(app => compareDates(app.date, fullDate))
-        .sort((app1, app2) => {
-            return app1.time - app2.time;
-        }) : [];
+  const isSelectable = dateNow.getTime() <= fullDate.getTime();
+  const isSelected = selectedDate && compareDates(selectedDate, fullDate);
 
-    const dateNow = new Date();
-    dateNow.setHours(0, 0, 0, 0);
-
-    let className = dateNow.getTime() <= fullDate.getTime() ? 'border cursor-pointer hover:bg-green-400 transition duration-200' : ' bg-gray-100';
-    let onClick = dateNow.getTime() <= fullDate.getTime() ? () => handleDateClick(day) : null;
-
-    return (
-        <div
-            key={year + month + date}
-            onClick={onClick}
-            className={`p-2 sm:p-4 text-sm sm:text-base rounded-lg relative ${className}`}>
-            {date}
-
-            {dayAppointments.length > 0 && (
-                <AppointmentPopup
-                    dayAppointments={dayAppointments}
-                    expandedDate={expandedDate}
-                    onSetExpandedDate={setExpandedDate}
-                />
-            )}
-        </div>
-    );
-};
-
-export default AppointmentDate;
+  return (
+    <div
+      onClick={isSelectable ? handleDateClick : undefined}
+      className={cn(
+        "p-2 rounded-lg relative flex flex-col h-14 border",
+        isSelectable ? "cursor-pointer hover:bg-green-600 hover:text-primary-foreground" : "bg-muted text-muted-foreground",
+        isSelected && "bg-green-600 text-primary-foreground",
+      )}
+    >
+      <span className={cn("text-sm", isSelected && "text-primary-foreground")}>{date}</span>
+      <AppointmentPopup
+        dayAppointments={dayAppointments}
+        isSelectable={isSelectable}
+        expandedDate={expandedDate}
+        onSetExpandedDate={setExpandedDate}
+      />
+    </div>
+  );
+}
