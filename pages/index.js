@@ -3,11 +3,10 @@ import prisma from '../lib/prisma';
 
 import AppointmentModal from '../components/AppointmentModal/AppointmentModal';
 import AppointmentNotification from '../components/AppointmentNotification/AppointmentNotification';
-import AppointmentSelectorContainer from '../components/AppointmentSelectorContainer/AppointmentSelectorContainer';
 import AppointmentCalendar from '../components/AppointmentCalendar/AppointmentCalendar';
 
 const Home = ({ appointmentsData }) => {
-  const currentFullYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear();
 
   const [error, setError] = useState(null);
 
@@ -18,8 +17,8 @@ const Home = ({ appointmentsData }) => {
   const [showModal, setShowModal] = useState(false);
 
   // State for month and year
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(currentFullYear);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [selectedYear, setSelectedYear] = useState(currentYear);
 
   const [appointments, setAppointments] = useState([]);
 
@@ -30,25 +29,23 @@ const Home = ({ appointmentsData }) => {
     setAppointments(appointmentsData);
   }, []);
 
-  // Function to navigate to the previous month
-  const prevMonth = () => {
-    if (currentMonth === 0) {
-      setCurrentMonth(11);
-      setCurrentYear(currentYear - 1);
+  const handlePrevMonth = () => {
+    if (selectedMonth === 0) {
+      setSelectedMonth(11);
+      setSelectedYear(selectedYear - 1);
     } else {
-      setCurrentMonth(currentMonth - 1);
+      setSelectedMonth(selectedMonth - 1);
     }
 
     setSlideDirection('slide-left');
   };
 
-  // Function to navigate to the next month
-  const nextMonth = () => {
-    if (currentMonth === 11) {
-      setCurrentMonth(0);
-      setCurrentYear(currentYear + 1);
+  const handleNextMonth = () => {
+    if (selectedMonth === 11) {
+      setSelectedMonth(0);
+      setSelectedYear(selectedYear + 1);
     } else {
-      setCurrentMonth(currentMonth + 1);
+      setSelectedMonth(selectedMonth + 1);
     }
 
     setSlideDirection('slide-right');
@@ -69,37 +66,16 @@ const Home = ({ appointmentsData }) => {
 
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
         <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-center">My Calendar</h1>
-
-        {/* Calendar Header */}
-        <div className="flex items-center mb-4">
-          <button
-            className="px-4 py-2rounded-lg hover:border transition duration-200"
-            onClick={prevMonth}>
-            &lt;
-          </button>
-          <div className="mx-4 text-xl font-semibold">
-            <div className="flex items-center justify-center space-x-4">
-              <AppointmentSelectorContainer
-                selectedMonth={currentMonth}
-                selectedYear={currentYear}
-                currentYear={currentFullYear}
-                onSelectMonth={setCurrentMonth}
-                onSelectYear={setCurrentYear}
-              />
-            </div>
-          </div>
-          <button
-            className="px-4 py-2 rounded-lg hover:border transition duration-200"
-            onClick={nextMonth}>
-            &gt;
-          </button>
-        </div>
-
         <AppointmentCalendar
           duration={200}
           appointments={appointments}
-          currentMonth={currentMonth}
           currentYear={currentYear}
+          selectedMonth={selectedMonth}
+          selectedYear={selectedYear}
+          onSetSelectedMonth={setSelectedMonth}
+          onSetSelectedYear={setSelectedYear}
+          onPrevMonth={handlePrevMonth}
+          onNextMonth={handleNextMonth}
           showModal={showModal}
           onShowModal={setShowModal}
           selectedDate={selectedDate}

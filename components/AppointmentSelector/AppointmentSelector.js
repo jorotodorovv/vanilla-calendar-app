@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const AppointmentSelector = ({ type, options, defaultIndex, mapTo, expandType, onSelect, onExpand }) => {
-    const MAX_SCROLLLESS_OPTION_COUNT = 5;
+    const MAX_OPTIONS_COUNT = 5;
 
     let [isExpanded, setExpanded] = useState(false);
     let currentRef = useRef(null);
@@ -28,11 +28,11 @@ const AppointmentSelector = ({ type, options, defaultIndex, mapTo, expandType, o
         setExpanded(!isExpanded);
     };
 
-    let scrollStyle = options.length > MAX_SCROLLLESS_OPTION_COUNT ? 'overflow-y-scroll' : null;
+    let scrollStyle = options.length > MAX_OPTIONS_COUNT ? 'overflow-y-scroll' : null;
     let mappedOptions = options.map(mapTo);
 
     return <div className="relative z-20">
-        <span className="cursor-pointer"
+        <span className="cursor-pointer text-2xl font-bold"
             onClick={handleExpand}>{mappedOptions[defaultIndex]}</span>
         {isExpanded && (
             <div className={`absolute top-full left-0 bg-white shadow-md rounded-lg ${scrollStyle} max-h-60 w-40`}>

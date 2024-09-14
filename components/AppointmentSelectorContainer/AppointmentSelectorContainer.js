@@ -24,7 +24,6 @@ const AppointmentSelectorContainer = (
             expandType={expandSelector}
             onExpand={setExpandSelector}
             onSelect={(_, month) => { onSelectMonth(month) }} />
-
         <AppointmentSelector
             type='year'
             options={years}
