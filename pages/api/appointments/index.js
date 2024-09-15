@@ -1,4 +1,4 @@
-import prisma from "../../lib/prisma";
+import prisma from "../../../lib/prisma";
 
 export default async function handler(req, res) {
     if (req.method === 'GET') {
@@ -11,7 +11,7 @@ export default async function handler(req, res) {
         });
 
         if (appointment) {
-            res.status(200).json(appointment);
+            res.status(200).json({ appointment });
         }
         else {
             res.status(400);
@@ -20,6 +20,7 @@ export default async function handler(req, res) {
     else if (req.method === 'POST') {
         try {
             const { date } = req.body;
+            
             if (!date) {
                 return res.status(400).json({ error: 'Missing date fields' });
             }
@@ -38,11 +39,14 @@ export default async function handler(req, res) {
                 return res.status(409).json({ error: 'Appointment has been already taken.' });
             }
 
-            const newAppointment = await prisma.appointment.create({
+            const appointment = await prisma.appointment.create({
                 data: { date: new Date(date) },
             });
 
-            res.status(201).json(newAppointment);
+            res.status(201).json({
+                id: appointment.id, 
+                date: appointment.date,
+            });
         } catch (error) {
             res.status(500).json({ error: 'Error creating appointment' });
         }

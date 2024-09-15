@@ -1,9 +1,12 @@
 import React from 'react';
-import { formatTime } from "../../base/datetime";
+import { useDispatch } from 'react-redux';
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+
+import { formatTime } from "../../base/datetime";
+import { setExistingAppointment } from '../../store/appointmentSlice';
 
 export default function AppointmentPopup({
     dayAppointments,
@@ -11,8 +14,10 @@ export default function AppointmentPopup({
     expandedDate,
     onSetExpandedDate,
 }) {
-    const MAX_POPUP_APPOINTMENTS = 2;
+    const MAX_POPUP_APPOINTMENTS = 1;
 
+    const dispatch = useDispatch();
+    
     return (
         dayAppointments.length > 0 &&
         <Popover open={expandedDate} onOpenChange={onSetExpandedDate}>
@@ -34,7 +39,7 @@ export default function AppointmentPopup({
                 <PopoverContent className="w-auto p-0 cursor-pointer" align="end">
                     <div className="grid gap-2 p-2">
                         {dayAppointments.map((app, index) => (
-                            <div key={index} className="text-sm whitespace-nowrap">
+                            <div onClick={() => dispatch(setExistingAppointment(app))} key={index} className="text-sm whitespace-nowrap">
                                 {formatTime(app.time)}
                             </div>
                         ))}

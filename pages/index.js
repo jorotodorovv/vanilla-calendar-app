@@ -105,7 +105,7 @@ export const getServerSideProps = async () => {
 
     const mappedAppointments = appointments.map(app => ({
       id: app.id,
-      date: app.date.toString(),
+      date: app.date.toISOString(),
       time: app.date.getHours() + (app.date.getMinutes() === 30 ? 0.5 : 0),
     }));
 
