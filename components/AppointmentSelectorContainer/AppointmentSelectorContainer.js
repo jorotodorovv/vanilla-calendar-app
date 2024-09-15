@@ -15,7 +15,7 @@ const AppointmentSelectorContainer = (
 
     const [expandSelector, setExpandSelector] = useState(null);
 
-    return <>
+    return <div className="flex space-x-4">
         <AppointmentSelector
             type='month'
             options={months}
@@ -32,7 +32,7 @@ const AppointmentSelectorContainer = (
             expandType={expandSelector}
             onExpand={setExpandSelector}
             onSelect={(year, _) => { onSelectYear(year) }} />
-    </>
+    </div>
 };
 
 export default AppointmentSelectorContainer;

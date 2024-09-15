@@ -56,7 +56,7 @@ export default function AppointmentCalendar({
         </Button>
       </div>
       <div key={selectedMonth + selectedYear}
-        className={`grid grid-cols-7 gap-4`}>
+        className={`grid grid-cols-7 grid-rows-7 gap-2 h-[500px]`}>
         {daysOfWeek.map((day, index) => (
           <div key={index} className="text-center font-semibold text-sm">{day}</div>
         ))}
