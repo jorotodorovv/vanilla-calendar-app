@@ -1,0 +1,8 @@
+{
+    "components": [
+        "button",
+        "popover",
+        "dialog",
+        "scroll-area"
+    ]
+}
