@@ -90,6 +90,7 @@ const Home = ({ appointmentsData }) => {
             appointments={appointments}
             setSelectedTimeSlot={setSelectedTimeSlot}
             onShowNotification={setShowNotification}
+            onSelectDate={setSelectedDate}
             onSetError={setError}
             onSetAppointments={setAppointments}
             onSetShowModal={setShowModal} />}

@@ -1,27 +1,27 @@
 import { compareDates, formatTime } from "../../base/datetime";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-const AppointmentTimeslot = ({ index, selectedDate, time, appointments, onSelectTimeSlot }) => {
-    const isTimeSlotTaken = (date, time) => {
-        return appointments.some(app =>
-            compareDates(app.date, date) && app.time === time);
-    };
+export default function AppointmentTimeslot({
+    time,
+    selectedDate,
+    appointments,
+    onSelectTimeSlot,
+    isSelected
+}) {
+    const isBooked = appointments.some(app => compareDates(app.date, selectedDate) && app.time === time);
 
-    const handleClickTimeslot = (time) => {
-        if (!isTimeSlotTaken(selectedDate, time)) {
-            onSelectTimeSlot(time);
-        }
-    };
-
-    let timeslotStyles = isTimeSlotTaken(selectedDate, time) ? 'bg-red-400 cursor-not-allowed' : 'border hover:bg-green-400';
-
-    return <li key={index}>
-        <button
-            className={`w-full py-2 px-4 text-sm sm:text-base rounded-lg transition duration-200 ${timeslotStyles}`}
-            onClick={() => handleClickTimeslot(time)}
-            disabled={isTimeSlotTaken(selectedDate, time)}>
+    return (
+        <Button
+            variant={isSelected ? "default" : "outline"}
+            className={cn(
+                "w-full",
+                isBooked && "opacity-50 cursor-not-allowed"
+            )}
+            onClick={() => !isBooked && onSelectTimeSlot(time)}
+            disabled={isBooked}
+        >
             {formatTime(time)}
-        </button>
-    </li>
-};
-
-export default AppointmentTimeslot;
+        </Button>
+    );
+}

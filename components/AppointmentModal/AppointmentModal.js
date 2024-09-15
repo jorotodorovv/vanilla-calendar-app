@@ -1,22 +1,32 @@
-import { useEffect, useMemo } from "react";
-
+import { useEffect, useMemo, useState } from "react";
 import { addHours, formatTime } from "../../base/datetime";
 import AppointmentTimeslot from "../AppointmentTimeslot/AppointmentTimeslot";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Loader2 } from "lucide-react";
 
-const AppointmentModal = (props) => {
-  const availableHours = useMemo(() => Array.from({ length: 10 }, (_, i) => i + 9));
+export default function AppointmentModal({
+  selectedDate,
+  appointments,
+  onSetAppointments,
+  onSetShowModal,
+  onShowNotification,
+  onSetError
+}) {
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const availableHours = useMemo(() => Array.from({ length: 10 }, (_, i) => i + 9), []);
 
   useEffect(() => {
-    props.onShowNotification(false);
-
-    return () => {
-      props.setSelectedTimeSlot(null);
-    };
-  }, []);
+    onShowNotification(false);
+    return () => setSelectedTimeSlot(null);
+  }, [onShowNotification]);
 
   const confirmAppointment = async () => {
+    setIsLoading(true);
     try {
-      let date = addHours(props.selectedDate, props.selectedTimeSlot);
+      let date = addHours(selectedDate, selectedTimeSlot);
 
       const res = await fetch('/api/appointments', {
         method: 'POST',
@@ -25,56 +35,66 @@ const AppointmentModal = (props) => {
       });
 
       if (res.ok) {
-        props.onSetAppointments([...props.appointments, { date, time: props.selectedTimeSlot }]);
-        props.onSetShowModal(false);
-        props.onShowNotification(true);
-      }
-      else {
-        let result = await res.json();
-
+        onSetAppointments([...appointments, { date, time: selectedTimeSlot }]);
+        onSetShowModal(false);
+        onShowNotification(true);
+      } else {
+        const result = await res.json();
         throw new Error(result.error);
       }
-    }
-    catch (ex) {
-      props.onSetError(ex.message);
-      props.onShowNotification(true);
+    } catch (ex) {
+      onSetError(ex.message);
+      onShowNotification(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 z-30">
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-        <h2 className="text-lg sm:text-xl font-bold mb-4 text-center">Select a time for {props.selectedDate.getDay()}</h2>
-        <ul className="grid grid-cols-2 gap-4">
-          {availableHours.map((time, index) => (
-            <AppointmentTimeslot
-              key={props.selectedDate + time}
-              time={time}
-              index={index}
-              selectedDate={props.selectedDate}
-              appointments={props.appointments}
-              onSelectTimeSlot={props.setSelectedTimeSlot}
-            />
-          ))}
-        </ul>
-        {props.selectedTimeSlot && (
-          <div className="mt-4">
-            <p className="mb-2 text-sm sm:text-base">You selected <span className="font-bold">{formatTime(props.selectedTimeSlot)}</span></p>
-            <button
-              className="w-full py-2 px-4 bg-green-500 text-white text-sm sm:text-base rounded-lg hover:bg-green-600 transition duration-200"
-              onClick={confirmAppointment}>
-              Confirm Appointment
-            </button>
+    <Dialog open={true} onOpenChange={() => onSetShowModal(false)}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Select a time for {selectedDate.toLocaleDateString()}</DialogTitle>
+        </DialogHeader>
+        <ScrollArea className="h-[300px] w-full rounded-md border p-4">
+          <div className="grid grid-cols-2 gap-4">
+            {availableHours.map((time, index) => (
+              <AppointmentTimeslot
+                key={`${selectedDate}-${time}`}
+                time={time}
+                index={index}
+                selectedDate={selectedDate}
+                appointments={appointments}
+                onSelectTimeSlot={setSelectedTimeSlot}
+                isSelected={selectedTimeSlot === time}
+              />
+            ))}
+          </div>
+        </ScrollArea>
+        {selectedTimeSlot && (
+          <div className="mt-4 text-center">
+            <p className="mb-2">You selected <span className="font-bold">{formatTime(selectedTimeSlot)}</span></p>
           </div>
         )}
-        <button
-          className="mt-4 w-full py-2 px-4 bg-gray-300 text-sm sm:text-base rounded-lg hover:bg-gray-400 transition duration-200"
-          onClick={() => props.onSetShowModal(false)}>
-          Close
-        </button>
-      </div>
-    </div>
-  )
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onSetShowModal(false)}>
+            Cancel
+          </Button>
+          <Button 
+            onClick={confirmAppointment} 
+            disabled={!selectedTimeSlot || isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </>
+            ) : (
+              'Confirm Appointment'
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 }
-
-export default AppointmentModal;
