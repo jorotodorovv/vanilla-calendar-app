@@ -12,15 +12,28 @@ export default function AppointmentPopup({
     dayAppointments,
     isSelectable,
     expandedDate,
+    onDateClick,
     onSetExpandedDate,
 }) {
     const MAX_POPUP_APPOINTMENTS = 1;
 
     const dispatch = useDispatch();
-    
+
+    const setAppointment = (app) => dispatch(setExistingAppointment(app));
+
+    const handleOpenChange = (open) => {
+        if (dayAppointments.length > MAX_POPUP_APPOINTMENTS) {
+            onSetExpandedDate(open);
+        }
+        else {
+            onDateClick();
+            setAppointment(dayAppointments[0])
+        }
+    }
+
     return (
         dayAppointments.length > 0 &&
-        <Popover open={expandedDate} onOpenChange={onSetExpandedDate}>
+        <Popover open={expandedDate} onOpenChange={handleOpenChange}>
             <PopoverTrigger asChild>
                 <Button
                     variant="ghost"
@@ -37,13 +50,13 @@ export default function AppointmentPopup({
             </PopoverTrigger>
             {dayAppointments.length > MAX_POPUP_APPOINTMENTS &&
                 <PopoverContent className="w-auto p-0 cursor-pointer" align="end">
-                    <div className="grid gap-2 p-2">
-                        {dayAppointments.map((app, index) => (
-                            <div onClick={() => dispatch(setExistingAppointment(app))} key={index} className="text-sm whitespace-nowrap">
-                                {formatTime(app.time)}
-                            </div>
-                        ))}
-                    </div>
+                    {dayAppointments.map((app, index) => (
+                        <div onClick={() => setAppointment(app)}
+                            key={index}
+                            className="grid gap-2 p-2 text-sm hover:bg-green-600 hover:text-primary-foreground">
+                            {formatTime(app.time)}
+                        </div>
+                    ))}
                 </PopoverContent>
             }
         </Popover>

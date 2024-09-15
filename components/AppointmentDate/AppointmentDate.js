@@ -44,6 +44,7 @@ export default function AppointmentDate({ day, month, year, appointments, showMo
         dayAppointments={dayAppointments}
         isSelectable={isSelectable}
         expandedDate={expandedDate}
+        onDateClick={handleDateClick}
         onSetExpandedDate={setExpandedDate}
       />
     </div>
