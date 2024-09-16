@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-import { addHours, formatTime } from "../../base/datetime";
+import { addHours, formatTime, getHours } from "../../base/datetime";
 
 import AppointmentTimeslot from "../AppointmentTimeslot/AppointmentTimeslot";
 import { clearExistingAppointment } from "../../store/appointmentSlice";
@@ -25,7 +25,7 @@ export default function AppointmentModal({
   const dispatch = useDispatch();
   const existingAppointment = useSelector((state) => state.appointment.existingAppointment);
 
-  const availableHours = useMemo(() => Array.from({ length: 10 }, (_, i) => i + 9), []);
+  const availableHours = useMemo(() => getHours(9, 0.5, 9), []);
 
   useEffect(() => {
     onShowNotification(false);

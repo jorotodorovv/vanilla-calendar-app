@@ -4,6 +4,7 @@ import prisma from '../lib/prisma';
 import AppointmentModal from '../components/AppointmentModal/AppointmentModal';
 import AppointmentNotification from '../components/AppointmentNotification/AppointmentNotification';
 import AppointmentCalendar from '../components/AppointmentCalendar/AppointmentCalendar';
+import { formatDate } from '../base/datetime';
 
 const Home = ({ appointmentsData }) => {
   const currentYear = new Date().getFullYear();
@@ -61,7 +62,7 @@ const Home = ({ appointmentsData }) => {
     <>
       {showNotification && <AppointmentNotification
         message={error ? error : `Appointment confirmed on {0}`}
-        placeholders={[selectedDate]}
+        placeholders={[formatDate(selectedDate)]}
         onClose={handleNotificationClose} />}
 
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">

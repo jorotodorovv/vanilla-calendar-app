@@ -1,16 +1,39 @@
-function formatTime(hour) {
-    const period = hour >= 12 ? 'PM' : 'AM';
-    const wholeHour = Math.floor(hour); // Extract whole hour
-    const minutes = hour % 1 !== 0 ? '30' : '00'; // Check if there's a half-hour
-    const formattedHour = wholeHour % 12 || 12; // Convert 0 to 12 for 12-hour format
+const LOCALE = 'en';
 
-    return `${formattedHour}:${minutes} ${period}`;
+function formatTime(time) {
+    const hour = Math.floor(time);
+    const minutes = (time - hour) * 60;
+
+    const date = new Date(0, 0, 0, hour, minutes);
+
+    const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+    const formatter = new Intl.DateTimeFormat(LOCALE, options);
+    const formattedTime = formatter.format(date);
+
+    return formattedTime;
 }
 
-const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
-const getMonthName = (month, year) => new Date(year, month).toLocaleString('default', { month: 'long' });
+const formatDate = (date) => date.toLocaleString(LOCALE);
 
-const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const getHours = (start, interval, hours) => Array.from({ length: hours * (1 / interval) }, (_, i) => start + interval * i);
+
+const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
+const getMonthName = (month, year) => new Date(year, month).toLocaleString(LOCALE, { month: 'long' });
+
+function getDaysOfWeek() {
+    const baseDate = new Date(Date.UTC(2021, 0, 4));
+    const daysOfWeek = [];
+
+    for (let i = 0; i < 7; i++) {
+        const day = new Date(baseDate);
+        day.setDate(baseDate.getDate() + i);
+        daysOfWeek.push(day.toLocaleString(LOCALE, { weekday: 'short' }));
+    }
+
+    return daysOfWeek;
+}
+
+const daysOfWeek = getDaysOfWeek();
 
 function addHours(date, hours) {
     date.setTime(date.getTime() + (hours * 60 * 60 * 1000));
@@ -32,4 +55,4 @@ const getFirstDayOfMonth = (month, year) => {
     return firstDay === 0 ? 6 : firstDay - 1;
 };
 
-export { formatTime, getDaysInMonth, getFirstDayOfMonth, getMonthName, daysOfWeek, addHours, compareDates }
+export { formatTime, formatDate, getHours, getDaysInMonth, getFirstDayOfMonth, getMonthName, daysOfWeek, addHours, compareDates }
