@@ -29,8 +29,10 @@
     "init": "node components.js",
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "node .next/standalone/server.js",
+    "lint": "next lint",
+    "prisma:migrate": "npx prisma migrate deploy",
+    "prisma:generate": "npx prisma generate"
   },
   "eslintConfig": {
     "extends": [
