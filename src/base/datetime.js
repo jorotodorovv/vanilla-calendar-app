@@ -1,4 +1,5 @@
 const LOCALE = 'en';
+const TIME_ZONE = 'Europe/Sofia';
 
 function formatTime(time) {
     const hour = Math.floor(time);
@@ -55,4 +56,4 @@ const getFirstDayOfMonth = (month, year) => {
     return firstDay === 0 ? 6 : firstDay - 1;
 };
 
-export { formatTime, formatDate, getHours, getDaysInMonth, getFirstDayOfMonth, getMonthName, daysOfWeek, addHours, compareDates }
+export { formatTime, formatDate, getHours, getDaysInMonth, getFirstDayOfMonth, getMonthName, daysOfWeek, addHours, compareDates, LOCALE, TIME_ZONE }

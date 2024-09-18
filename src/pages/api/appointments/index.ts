@@ -1,4 +1,5 @@
 import prisma from "../../../lib/prisma";
+import { LOCALE, TIME_ZONE } from '../../../base/datetime';
 
 export default async function handler(req, res) {
     if (req.method === 'GET') {
@@ -45,7 +46,7 @@ export default async function handler(req, res) {
 
             res.status(201).json({
                 id: appointment.id, 
-                date: appointment.date,
+                date: appointment.date.toLocaleString(LOCALE, { timeZone: TIME_ZONE }),
             });
         } catch (error) {
             res.status(500).json({ error: 'Error creating appointment' });
