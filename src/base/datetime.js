@@ -56,4 +56,4 @@ const getFirstDayOfMonth = (month, year) => {
     return firstDay === 0 ? 6 : firstDay - 1;
 };
 
-export { formatTime, formatDate, getHours, getDaysInMonth, getFirstDayOfMonth, getMonthName, daysOfWeek, addHours, compareDates, LOCALE, TIME_ZONE }
+export { formatTime, formatDate, getHours, getDaysInMonth, getFirstDayOfMonth, getMonthName, daysOfWeek, addHours, compareDates }

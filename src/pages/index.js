@@ -4,7 +4,7 @@ import prisma from '../lib/prisma';
 import AppointmentModal from '../components/AppointmentModal/AppointmentModal';
 import AppointmentNotification from '../components/AppointmentNotification/AppointmentNotification';
 import AppointmentCalendar from '../components/AppointmentCalendar/AppointmentCalendar';
-import { formatDate, LOCALE, TIME_ZONE } from '../base/datetime';
+import { formatDate } from '../base/datetime';
 
 const Home = ({ appointmentsData }) => {
   const currentYear = new Date().getFullYear();
@@ -106,7 +106,7 @@ export const getServerSideProps = async () => {
 
     const mappedAppointments = appointments.map(app => ({
       id: app.id,
-      date: app.date.toLocaleString(LOCALE, { timeZone: TIME_ZONE }),
+      date: app.date,
       time: app.date.getHours() + (app.date.getMinutes() === 30 ? 0.5 : 0),
     }));
 
