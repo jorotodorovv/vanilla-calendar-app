@@ -31,8 +31,8 @@
     "build": "next build",
     "start": "node .next/standalone/server.js",
     "lint": "next lint",
-    "prisma:migrate": "npx prisma migrate deploy --schema=../prisma/schema.prisma",
-    "prisma:generate": "npx prisma generate --schema=../prisma/schema.prisma"
+    "prisma:migrate": "npx prisma migrate dev -n init",
+    "prisma:generate": "npx prisma generate"
   },
   "eslintConfig": {
     "extends": [

@@ -7,8 +7,6 @@ module.exports = {
             config.devtool = 'source-map';
         }
 
-        config.resolve.alias['@'] = path.resolve(__dirname, 'src');
-
         return config;
     },
 };

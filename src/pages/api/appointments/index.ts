@@ -25,7 +25,7 @@ export default async function handler(req, res) {
                 return res.status(400).json({ error: 'Missing date fields' });
             }
 
-            if (new Date(date).getTime() < Date.now) {
+            if (new Date(date).getTime() < Date.now()) {
                 return res.status(400).json({ error: 'Cannot schedule appointments in the past' });
             }
 

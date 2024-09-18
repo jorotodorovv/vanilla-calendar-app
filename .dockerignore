@@ -6,4 +6,5 @@ Dockerfile
 .git
 .vscode
 .env.local
-dev.db
+*.db
+*.sql
