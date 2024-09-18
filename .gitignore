@@ -32,4 +32,4 @@ yarn-error.log*
 .vscode/launch.json
 package-lock.json
 next-env.d.ts
-/components/ui
+**/components/ui
