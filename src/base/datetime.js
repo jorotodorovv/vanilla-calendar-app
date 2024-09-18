@@ -7,7 +7,7 @@ function formatTime(time) {
 
     const date = new Date(0, 0, 0, hour, minutes);
 
-    const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+    const options = { hour: '2-digit', minute: '2-digit', hour12: true, timezone: TIME_ZONE };
     const formatter = new Intl.DateTimeFormat(LOCALE, options);
     const formattedTime = formatter.format(date);
 
