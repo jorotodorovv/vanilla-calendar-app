@@ -29,7 +29,7 @@
     "init": "node components.js",
     "dev": "next dev",
     "build": "next build",
-    "full:build": "npm run init/ npm run build / npm run prisma:generate / npm run prisma:migrate",
+    "full:build": "npm run prisma:generate && npm run prisma:migrate && npm run init && npm run build",
     "start": "node .next/standalone/server.js",
     "lint": "next lint",
     "prisma:migrate": "npx prisma migrate dev -n init",
