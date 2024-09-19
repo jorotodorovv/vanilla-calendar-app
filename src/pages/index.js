@@ -25,6 +25,18 @@ const Home = ({ appointmentsData }) => {
 
   const [slideDirection, setSlideDirection] = useState('transition-transform');
 
+  /**
+   * Sets up initial state for slide direction and appointments
+   * @param {void} None - This effect doesn't take any parameters
+   * @returns {void} No return value
+   */
+  /**
+   * Handles the action of moving to the previous month in a date selection interface.
+   * If the current month is January, it sets the month to December and decreases the year by 1.
+   * Otherwise, it decreases the month by 1. Also sets the slide direction for animation.
+   * @param {void} - This function doesn't accept any parameters
+   * @returns {void} This function doesn't return a value
+   */
   useEffect(() => {
     setSlideDirection(null);
     setAppointments(appointmentsData);
@@ -36,6 +48,11 @@ const Home = ({ appointmentsData }) => {
       setSelectedYear(selectedYear - 1);
     } else {
       setSelectedMonth(selectedMonth - 1);
+    /**
+     * Handles the transition to the next month in a calendar view.
+     * @param {void} - This function doesn't take any parameters.
+     * @returns {void} This function doesn't return a value, but updates the state.
+     */
     }
 
     setSlideDirection('slide-left');
@@ -47,6 +64,10 @@ const Home = ({ appointmentsData }) => {
       setSelectedYear(selectedYear + 1);
     } else {
       setSelectedMonth(selectedMonth + 1);
+    /**
+     * Handles the closing of a notification
+     * @returns {void} This function doesn't return anything
+     */
     }
 
     setSlideDirection('slide-right');
