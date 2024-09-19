@@ -30,6 +30,15 @@ export default function AppointmentCalendar({
 
   useEffect(() => {
     if (slideDirection) {
+      /**
+       * Sets a timer to change the slide direction after a specified duration
+       * @param {number} duration - The delay in milliseconds before changing the slide direction
+       * @returns {number} The timer ID returned by setTimeout
+       /**
+        * Cleanup function to clear the timeout timer
+        * @returns {Function} A function that clears the timeout when invoked
+        */
+       */
       const timer = setTimeout(() => {
         setSlideDirection('transition-transform');
       }, duration);
@@ -57,9 +66,21 @@ export default function AppointmentCalendar({
       </div>
       <div key={selectedMonth + selectedYear}
         className={`grid grid-cols-7 grid-rows-7 gap-2 h-[500px]`}>
+        ```
+        /**
+         * Renders a list of days of the week
+         * @param {string[]} daysOfWeek - An array containing the names of the days of the week
+         * @returns {JSX.Element[]} An array of div elements, each representing a day of the week
+         */
+        ```
         {daysOfWeek.map((day, index) => (
           <div key={index} className="text-center font-semibold text-sm">{day}</div>
         ))}
+        /**
+         * Renders empty date placeholders at the beginning of a calendar month view
+         * @param {number} emptyDates - The number of empty date slots to render
+         * @returns {JSX.Element[]} An array of empty div elements for calendar padding
+         */
         {[...Array(emptyDates)].map((_, index) => (
           <div key={`empty-${index}`} className="text-center text-sm"></div>
         ))}
