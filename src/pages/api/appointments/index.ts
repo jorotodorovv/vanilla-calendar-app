@@ -1,5 +1,11 @@
 import prisma from "../../../lib/prisma";
 
+/**
+ * Handles GET and POST requests for appointment management.
+ * @param {Object} req - The request object containing method and query/body data.
+ * @param {Object} res - The response object used to send back the API response.
+ * @returns {Promise<void>} Doesn't return a value, but sends a JSON response with appropriate status code.
+ */
 export default async function handler(req, res) {
     if (req.method === 'GET') {
         const { date } = req.query;
