@@ -19,6 +19,16 @@ export default function AppointmentPopup({
 
     const dispatch = useDispatch();
 
+    /**
+     * Dispatches an action to set an existing appointment in the application state.
+     /**
+      * Handles the change in open state for a date cell in a calendar view
+      * @param {boolean} open - Indicates whether the date cell is being opened (true) or closed (false)
+      * @returns {void} This function doesn't return a value
+      */
+     * @param {Object} app - The appointment object to be set.
+     * @returns {void} This function doesn't return a value.
+     */
     const setAppointment = (app) => dispatch(setExistingAppointment(app));
 
     const handleOpenChange = (open) => {
@@ -45,6 +55,11 @@ export default function AppointmentPopup({
                     onClick={(e) => e.stopPropagation()}>
                     {dayAppointments.length > MAX_POPUP_APPOINTMENTS
                         ? `+${dayAppointments.length}`
+                        /**
+                         * Formats and joins appointment times for a day
+                         * @param {Array} dayAppointments - An array of appointment objects for a specific day
+                         * @returns {string} A string of formatted appointment times, each on a new line
+                         */
                         : dayAppointments.map(app => formatTime(app.time)).join('\n')}
                 </Button>
             </PopoverTrigger>
