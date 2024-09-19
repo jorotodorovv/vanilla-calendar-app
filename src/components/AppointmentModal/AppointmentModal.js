@@ -11,6 +11,16 @@ import { addHours, formatTime, getHours } from "../../base/datetime";
 import AppointmentTimeslot from "../AppointmentTimeslot/AppointmentTimeslot";
 import { clearExistingAppointment } from "../../store/appointmentSlice";
 
+/**
+ * AppointmentModal component for managing appointment scheduling and updates
+ * @param {Date} selectedDate - The date selected for the appointment
+ * @param {Array} appointments - List of existing appointments
+ * @param {Function} onSetAppointments - Callback to update the appointments list
+ * @param {Function} onSetShowModal - Callback to control the visibility of the modal
+ * @param {Function} onShowNotification - Callback to show notifications
+ * @param {Function} onSetError - Callback to set error messages
+ * @returns {JSX.Element} A dialog component for appointment scheduling and management
+ */
 export default function AppointmentModal({
   selectedDate,
   appointments,
@@ -23,20 +33,48 @@ export default function AppointmentModal({
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
+  /**
+   * Selects the existing appointment from the Redux store
+   /**
+    * Calculates and memoizes an array of available hours
+    * @param {void} - No parameters
+    * @returns {Array<string>} An array of formatted time strings representing available hours
+    */
+   * @param {Function} state - The current Redux state
+   * @returns {Object} The existing appointment object from the state
+   /**
+    * A React useEffect hook that manages notification visibility and cleans up appointment data.
+    * @param {function} onShowNotification - Function to control the visibility of notifications.
+    * @returns {function} Cleanup function that resets selected time and clears appointment data.
+    */
+   */
   const existingAppointment = useSelector((state) => state.appointment.existingAppointment);
 
   const availableHours = useMemo(() => getHours(9, 0.5, 9), []);
 
   useEffect(() => {
     onShowNotification(false);
+    /**
+     * Returns a function that resets the selected time and clears the appointment.
+     * @returns {Function} A function that when called, sets the selected time to null and clears the appointment.
+     */
     return () => {
       setSelectedTime(null);
       clearAppointment();
     }
   }, [onShowNotification]);
 
+  /**
+   * Clears the existing appointment from the application state
+   * @returns {void} Dispatches an action to clear the appointment, no return value
+   */
   const clearAppointment = () => dispatch(clearExistingAppointment());
 
+  /**
+   * Confirms or updates an appointment asynchronously
+   * @param {void} - This function doesn't take any parameters directly
+   * @returns {Promise<void>} A promise that resolves when the appointment is confirmed or updated
+   */
   const confirmAppointment = async () => {
     setIsLoading(true);
 
@@ -56,6 +94,13 @@ export default function AppointmentModal({
         body: JSON.stringify(data),
       });
 
+      /**
+       * Maps through an array of appointments and updates a specific appointment if its date matches the existingAppointment's date
+       * @param {Array} appointments - The array of appointment objects to be mapped
+       * @param {Object} existingAppointment - The appointment object to be checked against
+       * @param {Object} mappedAppointment - The new appointment object to replace the existing one if dates match
+       * @returns {Array} A new array of appointments with the specified appointment updated if a match is found
+       */
       if (res.ok) {
         const appointment = await res.json();
 
