@@ -25,7 +25,7 @@ function getDaysOfWeek() {
 const daysOfWeek = getDaysOfWeek();
 
 function addTime(date, hours, minutes) {
-    let newDate = new Date(date);
+    const newDate = new Date(date);
 
     newDate.setHours(hours, minutes, 0, 0);
 
