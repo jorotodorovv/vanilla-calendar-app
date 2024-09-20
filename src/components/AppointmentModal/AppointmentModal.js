@@ -14,7 +14,14 @@ import { clearExistingAppointment } from "../../store/appointmentSlice";
 export default function AppointmentModal({
   selectedDate,
   appointments,
-  onSelectDate,
+export default function AppointmentModal({
+  selectedDate,
+  appointments,
+  onSetAppointments,
+  onSetShowModal,
+  onShowNotification,
+  onSetError
+}) {
   onSetAppointments,
   onSetShowModal,
   onShowNotification,
