@@ -14,13 +14,14 @@ import { clearExistingAppointment } from "../../store/appointmentSlice";
 export default function AppointmentModal({
   selectedDate,
   appointments,
+  onSelectDate,
   onSetAppointments,
   onSetShowModal,
   onShowNotification,
   onSetError
 }) {
-  const [selectedTime, setSelectedTime] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedTime, setSelectedTime] = useState(null);
 
   const dispatch = useDispatch();
   const existingAppointment = useSelector((state) => state.appointment.existingAppointment);
@@ -31,6 +32,8 @@ export default function AppointmentModal({
     onShowNotification(false);
     return () => {
       setSelectedTime(null);
+      //onSelectDate(null);
+
       clearAppointment();
     }
   }, [onShowNotification]);
@@ -41,14 +44,12 @@ export default function AppointmentModal({
     setIsLoading(true);
 
     try {
-      const date = addHours(selectedDate, selectedTime);
-      
       const endpoint = existingAppointment ? '/api/appointments/update' : '/api/appointments';
       const method = existingAppointment ? 'PUT' : 'POST';
 
       const data = existingAppointment
-        ? { id: existingAppointment.id, date }
-        : { date };
+        ? { id: existingAppointment.id, date: selectedDate }
+        : { date: selectedDate };
 
       const res = await fetch(endpoint, {
         method,
@@ -59,7 +60,6 @@ export default function AppointmentModal({
       if (res.ok) {
         const appointment = await res.json();
 
-        console.log(appointment);
         const mappedAppointment = {
           ...appointment, time: selectedTime
         };
@@ -69,8 +69,10 @@ export default function AppointmentModal({
           : [...appointments, mappedAppointment];
 
         onSetAppointments(updatedAppointments);
+        onSetError(null);
         onShowNotification(true);
-      } else {
+      }
+      else {
         const result = await res.json();
         throw new Error(result.error);
       }
@@ -90,8 +92,8 @@ export default function AppointmentModal({
         <DialogHeader>
           <DialogTitle>
             {existingAppointment
-              ? `Update Appointment for ${selectedDate.toLocaleDateString()}`
-              : `Select a time for ${selectedDate.toLocaleDateString()}`}
+              ? `Update Appointment for ${selectedDate}`
+              : `Select a time for ${selectedDate}`}
           </DialogTitle>
         </DialogHeader>
         <ScrollArea className="h-[300px] w-full rounded-md border p-4">
@@ -102,9 +104,10 @@ export default function AppointmentModal({
                 time={time}
                 index={index}
                 selectedDate={selectedDate}
+                onSelectDate={onSelectDate}
                 appointments={appointments}
-                onSelectTimeSlot={setSelectedTime}
-                isSelected={selectedTime === time}
+                selectedTime={selectedTime}
+                onSelectedTime={setSelectedTime}
               />
             ))}
           </div>

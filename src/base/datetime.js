@@ -36,17 +36,22 @@ function getDaysOfWeek() {
 
 const daysOfWeek = getDaysOfWeek();
 
-function addHours(date, hours) {
-    date.setTime(date.getTime() + (hours * 60 * 60 * 1000));
-    return date;
+function addTime(date, hours, minutes) {
+    let newDate = new Date(date);
+
+    newDate.setHours(hours, minutes, 0, 0);
+
+    return newDate;
 }
 
-function compareDates(d1, d2) {
+function compareDates(d1, d2, excludeTime) {
     let date1 = new Date(d1);
     let date2 = new Date(d2);
 
-    date1.setHours(0, 0, 0, 0);
-    date2.setHours(0, 0, 0, 0);
+    if (excludeTime) {
+        date1.setHours(0, 0, 0, 0);
+        date2.setHours(0, 0, 0, 0);
+    }
 
     return date1.getTime() === date2.getTime();
 }
@@ -56,4 +61,4 @@ const getFirstDayOfMonth = (month, year) => {
     return firstDay === 0 ? 6 : firstDay - 1;
 };
 
-export { formatTime, formatDate, getHours, getDaysInMonth, getFirstDayOfMonth, getMonthName, daysOfWeek, addHours, compareDates }
+export { formatTime, formatDate, getHours, getDaysInMonth, getFirstDayOfMonth, getMonthName, daysOfWeek, addTime, compareDates }
