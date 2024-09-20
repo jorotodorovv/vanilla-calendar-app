@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-import { addHours, formatTime, getHours } from "../../base/datetime";
+import { formatTime, getHours } from "../../base/datetime";
 
 import AppointmentTimeslot from "../AppointmentTimeslot/AppointmentTimeslot";
 import { clearExistingAppointment } from "../../store/appointmentSlice";
@@ -26,7 +26,14 @@ export default function AppointmentModal({
   const dispatch = useDispatch();
   const existingAppointment = useSelector((state) => state.appointment.existingAppointment);
 
-  const availableHours = useMemo(() => getHours(9, 0.5, 9), []);
+  const availableHours = useMemo(() => getHours(9, 0.5, 9).map(time => {
+    const hour = Math.floor(time);
+    const minute = (time - hour) * 60;
+
+    const date = new Date(0, 0, 0, hour, minute);
+
+    return { time: formatTime(date), hour, minute };
+  }), []);
 
   useEffect(() => {
     onShowNotification(false);
@@ -61,7 +68,7 @@ export default function AppointmentModal({
         const appointment = await res.json();
 
         const mappedAppointment = {
-          ...appointment, time: selectedTime
+          ...appointment, ...selectedTime
         };
 
         const updatedAppointments = existingAppointment
@@ -100,7 +107,7 @@ export default function AppointmentModal({
           <div className="grid grid-cols-2 gap-4">
             {availableHours.map((time, index) => (
               <AppointmentTimeslot
-                key={`${selectedDate}-${time}`}
+                key={`${time.time}`}
                 time={time}
                 index={index}
                 selectedDate={selectedDate}
@@ -114,7 +121,7 @@ export default function AppointmentModal({
         </ScrollArea>
         {selectedTime && (
           <div className="mt-4 text-center">
-            <p className="mb-2">You selected <span className="font-bold">{formatTime(selectedTime)}</span></p>
+            <p className="mb-2">You selected <span className="font-bold">{selectedTime.time}</span></p>
           </div>
         )}
         <DialogFooter>

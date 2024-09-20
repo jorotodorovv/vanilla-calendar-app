@@ -5,7 +5,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-import { formatTime } from "../../base/datetime";
 import { setExistingAppointment } from '../../store/appointmentSlice';
 
 export default function AppointmentPopup({
@@ -45,7 +44,7 @@ export default function AppointmentPopup({
                     onClick={(e) => e.stopPropagation()}>
                     {dayAppointments.length > MAX_POPUP_APPOINTMENTS
                         ? `+${dayAppointments.length}`
-                        : dayAppointments.map(app => formatTime(app.time)).join('\n')}
+                        : dayAppointments.map(app => app.time).join('\n')}
                 </Button>
             </PopoverTrigger>
             {dayAppointments.length > MAX_POPUP_APPOINTMENTS &&
@@ -54,7 +53,7 @@ export default function AppointmentPopup({
                         <div onClick={() => setAppointment(app)}
                             key={index}
                             className="grid gap-2 p-2 text-sm hover:bg-green-600 hover:text-primary-foreground">
-                            {formatTime(app.time)}
+                            {app.time}
                         </div>
                     ))}
                 </PopoverContent>

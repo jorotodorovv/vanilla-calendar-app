@@ -19,11 +19,14 @@ export default function AppointmentDate({ day, month, year, appointments, showMo
     setExpandedDate(false);
   };
 
-  const hasAppointment = appointments.some(app => compareDates(app.date, currentDate));
-
+  
   const dayAppointments = appointments
     .filter(app => compareDates(app.date, currentDate, true))
-    .sort((app1, app2) => app1.time - app2.time);
+    .sort((app1, app2) => {
+      return app1.hour !== app2.hour ? 
+      app1.hour - app2.hour : 
+      app1.minute - app2.minute
+    });
 
   const dateNow = new Date();
   dateNow.setHours(0, 0, 0, 0);

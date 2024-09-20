@@ -1,20 +1,8 @@
-const LOCALE = 'bg';
-const TIME_ZONE = 'Europe/Sofia';
-
-function formatTime(time) {
-    const hour = Math.floor(time);
-    const minutes = (time - hour) * 60;
-
-    const date = new Date(0, 0, 0, hour, minutes);
-
-    const options = { hour: '2-digit', minute: '2-digit', hour12: true, timezone: TIME_ZONE };
-    const formatter = new Intl.DateTimeFormat(LOCALE, options);
-    const formattedTime = formatter.format(date);
-
-    return formattedTime;
-}
+const LOCALE = process.env.LOCALE || 'bg';
+const TIME_ZONE = process.env.TIME_ZONE || 'Europe/Sofia';
 
 const formatDate = (date) => date.toLocaleString(LOCALE, { timezone: TIME_ZONE });
+const formatTime = (date) => date.toLocaleTimeString(LOCALE, { timezone: TIME_ZONE, hour: '2-digit', minute: '2-digit' });
 
 const getHours = (start, interval, hours) => Array.from({ length: hours * (1 / interval) }, (_, i) => start + interval * i);
 
@@ -61,4 +49,4 @@ const getFirstDayOfMonth = (month, year) => {
     return firstDay === 0 ? 6 : firstDay - 1;
 };
 
-export { formatTime, formatDate, getHours, getDaysInMonth, getFirstDayOfMonth, getMonthName, daysOfWeek, addTime, compareDates }
+export { formatDate, formatTime, getHours, getDaysInMonth, getFirstDayOfMonth, getMonthName, daysOfWeek, addTime, compareDates }

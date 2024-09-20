@@ -4,7 +4,7 @@ import prisma from '../lib/prisma';
 import AppointmentModal from '../components/AppointmentModal/AppointmentModal';
 import AppointmentNotification from '../components/AppointmentNotification/AppointmentNotification';
 import AppointmentCalendar from '../components/AppointmentCalendar/AppointmentCalendar';
-import { formatDate } from '../base/datetime';
+import { formatDate, formatTime } from '../base/datetime';
 
 const Home = ({ appointmentsData }) => {
   const currentYear = new Date().getFullYear();
@@ -104,11 +104,18 @@ export const getServerSideProps = async () => {
   try {
     const appointments = await prisma.appointment.findMany();
 
-    const mappedAppointments = appointments.map(app => ({
-      id: app.id,
-      date: app.date.toISOString(),
-      time: app.date.getHours() + (app.date.getMinutes() === 30 ? 0.5 : 0),
-    }));
+    const mappedAppointments = appointments.map(app => {
+      const localTime = formatTime(app.date);
+      const [hour, minute, _] = localTime.split(/:| /);
+
+      return {
+        id: app.id,
+        date: app.date.toISOString(),
+        time: localTime,
+        hour: Number(hour),
+        minute: Number(minute),
+      }
+    });
 
     return { props: { appointmentsData: mappedAppointments } };
   }

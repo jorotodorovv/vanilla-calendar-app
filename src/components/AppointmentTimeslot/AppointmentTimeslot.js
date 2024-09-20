@@ -1,32 +1,32 @@
-import { addTime, compareDates, formatTime } from "../../base/datetime";
+import { addTime, compareDates } from "../../base/datetime";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function AppointmentTimeslot({
-    time,
+    time: currentTime,
     selectedDate,
     onSelectDate,
     appointments,
     selectedTime,
     onSelectedTime
 }) {
-    const hours = Math.floor(time);
-    const minutes = (time - hours) * 60;
+    const currentDate = addTime(selectedDate, currentTime.hour, currentTime.minute);
 
-    const currentDate = addTime(selectedDate, hours, minutes);
-    
     const isBooked = appointments.some(app =>
         compareDates(app.date, currentDate) ||
         new Date(currentDate).getTime() < Date.now());
 
     const handleSelectTimeslot = () => {
-        onSelectedTime(time);
+        onSelectedTime(currentTime);
         onSelectDate(currentDate);
     };
 
     return (
         <Button
-            variant={selectedTime === time ? "default" : "outline"}
+            variant={selectedTime && 
+                selectedTime.hour === currentTime.hour && 
+                selectedTime.minute === currentTime.minute ? 
+                "default" : "outline"}
             className={cn(
                 "w-full",
                 isBooked && "opacity-50 cursor-not-allowed"
@@ -34,7 +34,7 @@ export default function AppointmentTimeslot({
             onClick={() => !isBooked && handleSelectTimeslot()}
             disabled={isBooked}
         >
-            {formatTime(time)}
+            {currentTime.time}
         </Button>
     );
 }
