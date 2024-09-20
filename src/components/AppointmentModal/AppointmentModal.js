@@ -14,6 +14,7 @@ import { clearExistingAppointment } from "../../store/appointmentSlice";
 export default function AppointmentModal({
   selectedDate,
   appointments,
+  onSelectDate,
   onSetAppointments,
   onSetShowModal,
   onShowNotification,
@@ -38,7 +39,6 @@ export default function AppointmentModal({
     onShowNotification(false);
     return () => {
       setSelectedTime(null);
-      //onSelectDate(null);
 
       clearAppointment();
     }
