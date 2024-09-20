@@ -1,4 +1,4 @@
-const LOCALE = 'en';
+const LOCALE = 'bg';
 const TIME_ZONE = 'Europe/Sofia';
 
 function formatTime(time) {
@@ -14,7 +14,7 @@ function formatTime(time) {
     return formattedTime;
 }
 
-const formatDate = (date) => date.toLocaleString(LOCALE);
+const formatDate = (date) => date.toLocaleString(LOCALE, { timezone: TIME_ZONE });
 
 const getHours = (start, interval, hours) => Array.from({ length: hours * (1 / interval) }, (_, i) => start + interval * i);
 
