@@ -25,12 +25,39 @@ const Home = ({ appointmentsData }) => {
 
   const [slideDirection, setSlideDirection] = useState('transition-transform');
 
+  ```
+  /**
+   * Effect hook to initialize slide direction and appointments
+   * @param {Array} appointmentsData - The initial appointments data
+   * @returns {void} This effect does not return anything
+   */
+  ```
   useEffect(() => {
     setSlideDirection(null);
     setAppointments(appointmentsData);
   }, []);
 
+  ```
+  /**
+   * Handles the action of moving to the previous month in a calendar interface.
+   * If the current month is January, it sets the month to December and decrements the year.
+   * Otherwise, it simply decrements the month.
+   * Also sets the slide direction for animation purposes.
+   * @param {void} - This function doesn't take any parameters
+   * @returns {void} This function doesn't return a value
+   */
+  ```
   const handlePrevMonth = () => {
+    ```
+    /**
+     * Handles the action of moving to the next month in a calendar.
+     * If the current month is December, it moves to January of the next year.
+     * Otherwise, it moves to the next month of the current year.
+     * Also sets the slide direction for animation purposes.
+     * @param {void} - This function doesn't take any parameters
+     * @returns {void} This function doesn't return a value
+     */
+    ```
     if (selectedMonth === 0) {
       setSelectedMonth(11);
       setSelectedYear(selectedYear - 1);
@@ -42,6 +69,10 @@ const Home = ({ appointmentsData }) => {
   };
 
   const handleNextMonth = () => {
+    /**
+     * Handles the closing of a notification by resetting related state variables.
+     * @returns {void} This function doesn't return a value.
+     */
     if (selectedMonth === 11) {
       setSelectedMonth(0);
       setSelectedYear(selectedYear + 1);
@@ -104,6 +135,11 @@ export const getServerSideProps = async () => {
   try {
     const appointments = await prisma.appointment.findMany();
 
+    /**
+     * Maps appointments to a new format with additional time-related properties
+     * @param {Array} appointments - An array of appointment objects
+     * @returns {Array} An array of mapped appointment objects with id, date, time, hour, and minute properties
+     */
     const mappedAppointments = appointments.map(app => {
       const localTime = formatTime(app.date);
       const [hour, minute, _] = localTime.split(/:| /);
