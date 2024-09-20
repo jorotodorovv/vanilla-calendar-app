@@ -34,6 +34,12 @@ export default function AppointmentCalendar({
         setSlideDirection('transition-transform');
       }, duration);
 
+      ```
+      /**
+       * Cleanup function to clear the timeout timer.
+       * @returns {Function} A function that clears the timeout when called.
+       */
+      ```
       return () => clearTimeout(timer);
     }
   }, [slideDirection, duration, setSlideDirection]);
@@ -51,6 +57,18 @@ export default function AppointmentCalendar({
           onSelectMonth={onSetSelectedMonth}
           onSelectYear={onSetSelectedYear}
         />
+        ```
+        /**
+         * Renders a row of day names for a calendar component
+         /**
+          * Renders empty date placeholders at the beginning of a calendar month view
+          * @param {number} emptyDates - The number of empty date slots to render
+          * @returns {JSX.Element[]} An array of empty div elements representing empty dates
+          */
+         * @param {string[]} daysOfWeek - An array of strings representing the days of the week
+         * @returns {JSX.Element[]} An array of div elements, each containing a day of the week
+         */
+        ```
         <Button variant="outline" size="icon" onClick={() => onNextMonth()}>
           <ChevronRight className="h-4 w-4" />
         </Button>

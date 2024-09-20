@@ -18,8 +18,18 @@ export default function AppointmentPopup({
 
     const dispatch = useDispatch();
 
+    /**
+     * Sets an existing appointment in the application state
+     * @param {Object} app - The appointment object to be set
+     * @returns {Function} A dispatch function that updates the state with the existing appointment
+     */
     const setAppointment = (app) => dispatch(setExistingAppointment(app));
 
+    /**
+     * Handles the change in open state for a date component
+     * @param {boolean} open - Indicates whether the component is open or closed
+     * @returns {void} This function doesn't return a value
+     */
     const handleOpenChange = (open) => {
         if (dayAppointments.length > MAX_POPUP_APPOINTMENTS) {
             onSetExpandedDate(open);
@@ -44,6 +54,11 @@ export default function AppointmentPopup({
                     onClick={(e) => e.stopPropagation()}>
                     {dayAppointments.length > MAX_POPUP_APPOINTMENTS
                         ? `+${dayAppointments.length}`
+                        /**
+                         * Joins the time values of day appointments into a single string
+                         * @param {Array} dayAppointments - An array of appointment objects for a specific day
+                         * @returns {string} A string containing the time values of appointments, separated by newline characters
+                         */
                         : dayAppointments.map(app => app.time).join('\n')}
                 </Button>
             </PopoverTrigger>
