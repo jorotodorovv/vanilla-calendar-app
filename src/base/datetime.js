@@ -1,19 +1,8 @@
-const LOCALE = 'en';
+const LOCALE = process.env.LOCALE || 'bg';
+const TIME_ZONE = process.env.TIME_ZONE || 'Europe/Sofia';
 
-function formatTime(time) {
-    const hour = Math.floor(time);
-    const minutes = (time - hour) * 60;
-
-    const date = new Date(0, 0, 0, hour, minutes);
-
-    const options = { hour: '2-digit', minute: '2-digit', hour12: true };
-    const formatter = new Intl.DateTimeFormat(LOCALE, options);
-    const formattedTime = formatter.format(date);
-
-    return formattedTime;
-}
-
-const formatDate = (date) => date.toLocaleString(LOCALE);
+const formatDate = (date) => date.toLocaleString(LOCALE, { timezone: TIME_ZONE });
+const formatTime = (date) => date.toLocaleTimeString(LOCALE, { timezone: TIME_ZONE, hour: '2-digit', minute: '2-digit' });
 
 const getHours = (start, interval, hours) => Array.from({ length: hours * (1 / interval) }, (_, i) => start + interval * i);
 
@@ -35,17 +24,22 @@ function getDaysOfWeek() {
 
 const daysOfWeek = getDaysOfWeek();
 
-function addHours(date, hours) {
-    date.setTime(date.getTime() + (hours * 60 * 60 * 1000));
-    return date;
+function addTime(date, hours, minutes) {
+    const newDate = new Date(date);
+
+    newDate.setHours(hours, minutes, 0, 0);
+
+    return newDate;
 }
 
-function compareDates(d1, d2) {
+function compareDates(d1, d2, excludeTime) {
     let date1 = new Date(d1);
     let date2 = new Date(d2);
 
-    date1.setHours(0, 0, 0, 0);
-    date2.setHours(0, 0, 0, 0);
+    if (excludeTime) {
+        date1.setHours(0, 0, 0, 0);
+        date2.setHours(0, 0, 0, 0);
+    }
 
     return date1.getTime() === date2.getTime();
 }
@@ -55,4 +49,4 @@ const getFirstDayOfMonth = (month, year) => {
     return firstDay === 0 ? 6 : firstDay - 1;
 };
 
-export { formatTime, formatDate, getHours, getDaysInMonth, getFirstDayOfMonth, getMonthName, daysOfWeek, addHours, compareDates }
+export { formatDate, formatTime, getHours, getDaysInMonth, getFirstDayOfMonth, getMonthName, daysOfWeek, addTime, compareDates }

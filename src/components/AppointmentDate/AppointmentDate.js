@@ -5,7 +5,8 @@ import { cn } from "@/lib/utils"
 
 export default function AppointmentDate({ day, month, year, appointments, showModal, onShowModal, onSelectDate, selectedDate }) {
   const date = day + 1;
-  const fullDate = new Date(year, month, date);
+  const currentDate = new Date(year, month, date);
+
   const [expandedDate, setExpandedDate] = useState(false);
 
   useEffect(() => {
@@ -13,22 +14,25 @@ export default function AppointmentDate({ day, month, year, appointments, showMo
   }, [month, showModal]);
 
   const handleDateClick = () => {
-    onSelectDate(fullDate);
+    onSelectDate(currentDate);
     onShowModal(true);
     setExpandedDate(false);
   };
 
-  const hasAppointment = appointments.some(app => compareDates(app.date, fullDate));
-
+  
   const dayAppointments = appointments
-    .filter(app => compareDates(app.date, fullDate))
-    .sort((app1, app2) => app1.time - app2.time);
+    .filter(app => compareDates(app.date, currentDate, true))
+    .sort((app1, app2) => {
+      return app1.hour !== app2.hour ? 
+      app1.hour - app2.hour : 
+      app1.minute - app2.minute
+    });
 
   const dateNow = new Date();
   dateNow.setHours(0, 0, 0, 0);
 
-  const isSelectable = dateNow.getTime() <= fullDate.getTime();
-  const isSelected = selectedDate && compareDates(selectedDate, fullDate);
+  const isSelectable = dateNow.getTime() <= currentDate.getTime();
+  const isSelected = selectedDate && compareDates(selectedDate, currentDate);
 
   return (
     <div

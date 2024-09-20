@@ -32,7 +32,7 @@
     "full:build": "npm run prisma:generate && npm run prisma:migrate && npm run init && npm run build",
     "start": "node .next/standalone/server.js",
     "lint": "next lint",
-    "prisma:migrate": "npx prisma migrate dev -n init",
+    "prisma:migrate": "npx prisma migrate deploy",
     "prisma:generate": "npx prisma generate"
   },
   "eslintConfig": {
